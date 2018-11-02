@@ -1,8 +1,11 @@
 package com.civic.gercs.civicsense;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
@@ -14,6 +17,10 @@ public class MainActivity extends AppCompatActivity {
     private Sender sender;
     private ManagerReport managerReport;
     static final String TAG ="Civic";
+    private RecyclerView mRecyclerView;
+    private RecyclerView.Adapter mAdapter;
+    private RecyclerView.LayoutManager mLayoutManager;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,10 +29,27 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        sender  = new Sender();
+        mRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
+        sender = new Sender();
         managerReport = new ManagerReport();
         sender.fetchReports(managerReport);
-//        Log.i(TAG, )
+
+
+        managerReport.setImportDoneListener(new ManagerReport.OnImportDoneEventListener() {
+            @Override
+            public void onImportDone() {
+                mRecyclerView.setHasFixedSize(true);
+
+
+                mLayoutManager = new LinearLayoutManager(getApplicationContext());
+                mRecyclerView.setLayoutManager(mLayoutManager);
+
+
+                mAdapter = new MyAdapter(managerReport.reportModels);
+                mRecyclerView.setAdapter(mAdapter);
+
+            }
+        });
 
     }
 

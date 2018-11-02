@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">CivicSense</string>
-    <string name="action_settings">Settings</string>
+    <string name="action_settings">Aggiorna</string>
+
+    <string name="test_tile_first_line">Via prova, 2</string>
+    <string name="test_tile_second_line">Testo temporaneo esageramente ed inutilmente lungo per testare</string>
 </resources>

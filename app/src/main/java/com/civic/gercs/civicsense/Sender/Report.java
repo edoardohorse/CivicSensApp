@@ -26,6 +26,8 @@ public class Report implements Serializable {
     @SerializedName("photos")       @Expose
     private List<Photo> photos = null;
 
+    private ReportModel reportModel = null;
+
     public Boolean isVerified() {
         return verified;
     }
@@ -88,6 +90,8 @@ public class Report implements Serializable {
 
     public Report(){};
 
+    public ReportModel getModel(){ return new ReportModel(this.address, this.description, this.grade);}
+
     public Report(String address, String description, Location location) {
         this.address = address;
         this.description = description;
@@ -119,5 +123,17 @@ public class Report implements Serializable {
             this.reports = reports;
         }
 
+    }
+
+    public class ReportModel{
+        public String address;
+        public String descrition;
+        public GradeReport grade;
+
+        public ReportModel(String address, String descrition, GradeReport grade) {
+            this.address = address;
+            this.descrition = descrition;
+            this.grade = grade;
+        }
     }
 }

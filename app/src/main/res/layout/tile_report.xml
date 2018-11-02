@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/tile_report_height"
+    android:paddingLeft="@dimen/tile_report_padding_left"
+    android:paddingRight="@dimen/tile_report_padding_right"
+    android:background="?android:attr/selectableItemBackground"
+    android:clickable="true">
+
+    <TextView
+        android:id="@+id/tile_address"
+        android:layout_toLeftOf="@id/tile_grade"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/tile_report_first_line_heigth"
+        android:gravity="bottom"
+        android:textSize="@dimen/tile_report_first_line_text"
+        android:text="@string/test_tile_first_line"
+
+        />
+
+
+    <TextView
+        android:id="@+id/tile_description"
+        android:layout_below="@id/tile_address"
+        android:layout_toLeftOf="@id/tile_grade"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/tile_report_second_line_heigth"
+        android:textColor="@android:color/darker_gray"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:textSize="@dimen/tile_report_second_line_text"
+        android:text="@string/test_tile_second_line"/>
+
+    <View
+        android:id="@+id/tile_grade"
+        android:layout_height="15dp"
+        android:layout_width="15dp"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="5dp"
+        android:layout_alignParentRight="true"
+        android:background="@drawable/circle_grade_high"
+
+        />
+
+    <View
+        android:layout_below="@id/tile_description"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="7dp"
+
+        android:background="@color/divider" />
+
+</RelativeLayout>
