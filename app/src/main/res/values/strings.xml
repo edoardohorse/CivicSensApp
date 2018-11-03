@@ -2,9 +2,13 @@
     <string name="app_name">CivicSense</string>
     <string name="action_settings">Aggiorna</string>
 
+    <string name="btn_search">Cerca</string>
+
     <string name="test_tile_first_line">Via prova, 2</string>
     <string name="test_tile_second_line">Testo temporaneo esageramente ed inutilmente lungo per testare</string>
 
+    <string name="search_title">Cerca</string>
+    <string name="search_hint">Inserisci il codice di tracking</string>
 
     <!-- label -->
     <string name="activity_user_report">Nuova segnalazione</string>
@@ -14,4 +18,7 @@
     <string name="label_account">Account</string>
     <string name="label_photo">Foto</string>
     <string name="label_description">Descrizione</string>
+
+    <string name="dialog_search_title">Risulato</string>
+    <string name="dialog_search_text">Nessun report con questo codice di tracking è stato trovato.</string>
 </resources>

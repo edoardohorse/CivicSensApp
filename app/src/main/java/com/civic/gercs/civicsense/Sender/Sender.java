@@ -52,7 +52,7 @@ public class Sender {
             @Override
             public void onFailure(Call<ResponsePhoto> call, Throwable t) {
 //                Toast.makeText(getApplicationContext(),t.getLocalizedMessage(),Toast.LENGTH_LONG).show();
-                Log.i(TAG,t.getLocalizedMessage());
+                Log.d(TAG,t.getLocalizedMessage());
                 t.printStackTrace();
             }
         });

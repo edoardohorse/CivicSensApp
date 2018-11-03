@@ -81,12 +81,35 @@ public class ManagerReport {
         }
     }
 
+    public void showReport(Report report){
+        // If not fetched before
+        if(report.getPhotos().isEmpty()) {
+            sender.fetchInfoReport(report);
+        }
+        else{
+            openReport(report);
+        }
+    }
 
+    public Report searchReportByCdt(String cdt){
+        for(Report rep: reports){
+            if(rep.getCdt().equals(cdt)){
+                return rep;
+            }
+        }
+
+        return null;
+
+    }
 
     // === Interface and its setter
     public interface OnImportDoneEventListener{
         void onImportDone();
     }
+    public interface SearchEventListener{
+        boolean seachReportByCdt(String c, Report f);
+    }
 
     public void setImportDoneListener(OnImportDoneEventListener listener){      mImportDoneListener     = listener;}
+
 }

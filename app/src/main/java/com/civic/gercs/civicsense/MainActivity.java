@@ -1,22 +1,29 @@
 package com.civic.gercs.civicsense;
 
 import android.annotation.TargetApi;
+import android.app.SearchManager;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.SearchEvent;
+import android.widget.SearchView;
 
 import com.civic.gercs.civicsense.Sender.Report;
 
 public class MainActivity extends AppCompatActivity implements EventListener{
 
-    private ManagerReport managerReport;
+    public static ManagerReport managerReport;
     public static final String TAG ="Civic";
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
@@ -69,6 +76,7 @@ public class MainActivity extends AppCompatActivity implements EventListener{
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
+
         return true;
     }
 
@@ -83,6 +91,11 @@ public class MainActivity extends AppCompatActivity implements EventListener{
        switch(id){
            case R.id.action_refresh:{
                managerReport.fetchReports();
+               break;
+           }
+           case R.id.action_search:{
+               openSearchActivity();
+               break;
            }
        }
 
@@ -124,4 +137,18 @@ public class MainActivity extends AppCompatActivity implements EventListener{
         mFab.show();
     }
 
+    public void openSearchActivity(){
+        Intent i = new Intent(this, SearchActivity.class);
+        startActivityForResult(i, 900);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == 900){
+            if(resultCode == RESULT_OK){
+                managerReport.showReport( (Report) data.getSerializableExtra("report"));
+            }
+        }
+    }
 }

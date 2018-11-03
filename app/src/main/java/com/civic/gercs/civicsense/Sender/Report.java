@@ -26,6 +26,11 @@ public class Report implements Serializable {
     @SerializedName("photos")       @Expose
     private List<String> photos = null;
 
+
+
+    @SerializedName("cdt")          @Expose
+    private String cdt = null;
+
     private ReportModel reportModel = null;
 
     public Boolean isVerified() {
@@ -87,6 +92,11 @@ public class Report implements Serializable {
     public void setPhotos(List<String> photos) {
         this.photos = photos;
     }
+
+    public String getCdt() {return cdt;}
+
+    public void setCdt(String cdt) {this.cdt = cdt;}
+
 
     public Report(){};
 
