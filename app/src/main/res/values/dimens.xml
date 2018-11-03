@@ -9,4 +9,8 @@
     <dimen name="tile_report_second_line_heigth">20dp</dimen>
     <dimen name="tile_report_first_line_text">16sp</dimen>
     <dimen name="tile_report_second_line_text">12sp</dimen>
+
+
+    <dimen name="title_card">12sp</dimen>
+
 </resources>

@@ -24,7 +24,7 @@ public class Report implements Serializable {
     @SerializedName("location")     @Expose
     private Location location;
     @SerializedName("photos")       @Expose
-    private List<Photo> photos = null;
+    private List<String> photos = null;
 
     private ReportModel reportModel = null;
 
@@ -80,11 +80,11 @@ public class Report implements Serializable {
         this.location = location;
     }
 
-    public List<Photo> getPhotos() {
+    public List<String> getPhotos() {
         return photos;
     }
 
-    public void setPhotos(List<Photo> photos) {
+    public void setPhotos(List<String> photos) {
         this.photos = photos;
     }
 

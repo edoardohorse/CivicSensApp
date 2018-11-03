@@ -1,27 +1,49 @@
 package com.civic.gercs.civicsense;
 
-import android.content.Context;
+import android.app.Activity;
 import android.util.Log;
 
 import com.civic.gercs.civicsense.Sender.Report;
+import com.civic.gercs.civicsense.Sender.Sender;
 
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.civic.gercs.civicsense.MainActivity.TAG;
 
 
 public class ManagerReport {
-    public List<Report> reports = null;
-    public ArrayList<Report.ReportModel> reportModels = null;
+    private List<Report> reports = null;
+    private ArrayList<Report.ReportModel> reportModels = null;
+    private Sender sender = new Sender();
+    private EventListener listener;
 
-    OnImportDoneEventListener mImportDoneListener = null;
+    private OnImportDoneEventListener mImportDoneListener = null;
 
-    public interface OnImportDoneEventListener{
-        void onImportDone();
+
+    // ==== Getter
+    public List<Report> getReports() { return reports; }
+    public ArrayList<Report.ReportModel> getReportModels() { return reportModels;}
+
+
+    // === Constructor
+    public ManagerReport(Activity a){
+        listener = (EventListener) a;
+
+        sender.setFetchReportDoneEventListener(new Sender.OnFetchReportDoneEventListener() {
+            @Override
+            public void onFetchDone(Report report) {
+                openReport(report);
+            }
+        });
     }
 
-    public void setImportDoneListener(OnImportDoneEventListener listener){ mImportDoneListener = listener;}
+
+    // === Method
+    public void fetchReports(){
+        sender.fetchReports(this);
+    }
 
     public void importReport(List<Report> rep){
         this.reports = rep;
@@ -34,7 +56,37 @@ public class ManagerReport {
         if(mImportDoneListener != null){
             mImportDoneListener.onImportDone();
         }
-        Log.i(MainActivity.TAG, this.reports.size()+" Report importati");
+        Log.i(TAG, this.reports.size()+" Report importati");
     }
 
+    private void openReport(Report report){
+
+        listener.openReport(report);
+
+        // Call fragment of report
+        Log.i(TAG, "Aperto report : "+ report.getAddress());
+    }
+
+
+    public void showReport(int position){
+        Report report = reports.get(position);
+        Report.ReportModel model = reportModels.get(position);
+
+        // If not fetched before
+        if(report.getPhotos().isEmpty()) {
+            sender.fetchInfoReport(report);
+        }
+        else{
+            openReport(report);
+        }
+    }
+
+
+
+    // === Interface and its setter
+    public interface OnImportDoneEventListener{
+        void onImportDone();
+    }
+
+    public void setImportDoneListener(OnImportDoneEventListener listener){      mImportDoneListener     = listener;}
 }

@@ -1,26 +1,28 @@
 package com.civic.gercs.civicsense;
 
-import android.content.Context;
+import android.annotation.TargetApi;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
-import com.civic.gercs.civicsense.Sender.Sender;
 
-public class MainActivity extends AppCompatActivity {
+import com.civic.gercs.civicsense.Sender.Report;
 
-    private Sender sender;
+public class MainActivity extends AppCompatActivity implements EventListener{
+
     private ManagerReport managerReport;
-    static final String TAG ="Civic";
+    public static final String TAG ="Civic";
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
-
+    private FloatingActionButton mFab;
+    private String mTitle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,10 +31,12 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        mTitle =  this.getTitle().toString();
         mRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
-        sender = new Sender();
-        managerReport = new ManagerReport();
-        sender.fetchReports(managerReport);
+        mFab = (FloatingActionButton) findViewById(R.id.add_report);
+
+        managerReport = new ManagerReport(this);
+        managerReport.fetchReports();
 
 
         managerReport.setImportDoneListener(new ManagerReport.OnImportDoneEventListener() {
@@ -45,11 +49,13 @@ public class MainActivity extends AppCompatActivity {
                 mRecyclerView.setLayoutManager(mLayoutManager);
 
 
-                mAdapter = new MyAdapter(managerReport.reportModels);
+                mAdapter = new MyAdapter(managerReport);
                 mRecyclerView.setAdapter(mAdapter);
 
+//                openReport(managerReport.getReports().get(0));
             }
         });
+
 
     }
 
@@ -76,11 +82,46 @@ public class MainActivity extends AppCompatActivity {
         //noinspection SimplifiableIfStatement
        switch(id){
            case R.id.action_refresh:{
-               sender.fetchReports(managerReport);
+               managerReport.fetchReports();
            }
        }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    @TargetApi(16)
+    public void openReport(Report report){
+
+        mFab.hide();
+
+        setTitle(report.getAddress());
+        ReportFragment fragment = new ReportFragment();
+        Bundle b = new Bundle();
+        b.putSerializable("report", report);
+        fragment.setArguments(b);
+
+        FragmentManager fragmentManager         = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction =  fragmentManager.beginTransaction();
+
+
+        fragmentTransaction.setCustomAnimations(
+                R.anim.fragment_slide_left_enter,
+                R.anim.fragment_slide_left_exit,
+                R.anim.fragment_slide_right_enter,
+                R.anim.fragment_slide_right_exit);
+
+        fragmentTransaction.replace(R.id.main_content, fragment);
+        fragmentTransaction.addToBackStack(null);
+
+        fragmentTransaction.commit();
+
+    }
+
+    @Override
+    public void closeReport(){
+        setTitle(mTitle);
+        mFab.show();
     }
 
 }

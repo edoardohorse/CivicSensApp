@@ -4,4 +4,14 @@
 
     <string name="test_tile_first_line">Via prova, 2</string>
     <string name="test_tile_second_line">Testo temporaneo esageramente ed inutilmente lungo per testare</string>
+
+
+    <!-- label -->
+    <string name="activity_user_report">Nuova segnalazione</string>
+    <string name="label_name">Nome</string>
+    <string name="label_surname">Cognome</string>
+    <string name="label_email">Email</string>
+    <string name="label_account">Account</string>
+    <string name="label_photo">Foto</string>
+    <string name="label_description">Descrizione</string>
 </resources>

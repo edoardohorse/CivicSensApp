@@ -15,6 +15,7 @@ import java.util.List;
 
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
     private ArrayList<Report.ReportModel> mDataset;
+    private ManagerReport managerReport;
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
@@ -35,8 +36,9 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
 
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public MyAdapter( ArrayList<Report.ReportModel> dataset) {
-        mDataset = dataset;
+    public MyAdapter(ManagerReport managerReport){
+        this.managerReport = managerReport;
+        mDataset = managerReport.getReportModels();
     }
 
     // Create new views (invoked by the layout manager)
@@ -51,8 +53,6 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
         TextView description = (TextView) v.findViewById(R.id.tile_description);
         View grade           = (View) v.findViewById(R.id.tile_grade);
 
-
-
         MyViewHolder vh = new MyViewHolder(v, address, description, grade);
 
 
@@ -61,7 +61,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
 
     // Replace the contents of a view (invoked by the layout manager)
     @Override
-    public void onBindViewHolder(MyViewHolder holder, int position) {
+    public void onBindViewHolder(MyViewHolder holder, final int position) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
         holder.mAddressView.setText(mDataset.get(position).address);
@@ -75,7 +75,12 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
 
         holder.mGrade.setBackground(grade);
 
-
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                managerReport.showReport( position );
+            }
+        });
 
     }
 
@@ -84,6 +89,8 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
     public int getItemCount() {
         return mDataset != null? mDataset.size() : 0;
     }
+
+
 }
 
 

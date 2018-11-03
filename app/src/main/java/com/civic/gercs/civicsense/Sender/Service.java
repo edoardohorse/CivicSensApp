@@ -16,4 +16,7 @@ public interface Service {
     // Fetch all report of a city
     @GET("apiReport/ente/reports")
     Call<Report.ResponseReport> getAllReports();
+
+    @GET("apiReport/report/photos/{reportId}")
+    Call<ResponsePhoto> getPhotosByReportId(@Path("reportId") int reportId);
 }
