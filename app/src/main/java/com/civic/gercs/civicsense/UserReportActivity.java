@@ -31,15 +31,18 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.bumptech.glide.GenericTransitionOptions;
 import com.bumptech.glide.request.transition.ViewPropertyTransition;
-import com.civic.gercs.civicsense.Sender.City;
+import com.civic.gercs.civicsense.Sender.GradeReport;
 import com.civic.gercs.civicsense.Sender.Report;
 import com.civic.gercs.civicsense.Sender.Service;
 import com.civic.gercs.civicsense.Sender.ServiceGenerator;
@@ -60,6 +63,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 import static com.civic.gercs.civicsense.MainActivity.hasPermissions;
+import static com.civic.gercs.civicsense.MainActivity.managerReport;
 
 //import static com.example.layout_segnalazione.UserUtils.RC_SIGN_IN;
 
@@ -76,6 +80,8 @@ public class UserReportActivity extends AppCompatActivity{
     public  Button              mButtonSendReport;
     private EditText            mEditTextDescription;
     private String              mCurrentPhotoPath;
+    private Spinner             mSpinnerGrade;
+    private Spinner             mSpinnerType;
     ViewPropertyTransition.Animator animationObject;
 //    WebView webView;
     BottomSheetFragment         bottomSheetFragment;
@@ -86,6 +92,9 @@ public class UserReportActivity extends AppCompatActivity{
 //    private User                user = new User();
     private Report              report = new Report();
     private String                city ;
+    private String                address ;
+
+    private List<Report.TypeReport> listTypeReport;
 
     private ImageView mImageView;
 
@@ -112,6 +121,7 @@ public class UserReportActivity extends AppCompatActivity{
             ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
         }
 
+
         init();
     }
 
@@ -131,7 +141,8 @@ public class UserReportActivity extends AppCompatActivity{
 
         coordinatorLayout   =   (CoordinatorLayout) findViewById(R.id.coordinator);
 
-
+        mSpinnerGrade = (Spinner) findViewById(R.id.spinner_grade);
+        mSpinnerType = (Spinner) findViewById(R.id.spinner_type_report);
 
         progressDialog = new ProgressDialog(UserReportActivity.this);
         progressDialog.setMessage("Sto caricando....");
@@ -169,6 +180,22 @@ public class UserReportActivity extends AppCompatActivity{
         });
 
 
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.grade_report, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        mSpinnerGrade.setAdapter(adapter);
+
+        listTypeReport = managerReport.getListTypeOfReport();
+
+        String[] arr = new String[listTypeReport.size()];
+        for (int i = 0; i < listTypeReport.size(); i++) {
+            arr[i] = listTypeReport.get(i).getName();
+        }
+
+        ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, arr);
+        adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mSpinnerType.setAdapter(adapter2);
     }
 
     @Override
@@ -378,7 +405,6 @@ public class UserReportActivity extends AppCompatActivity{
             return;
         }
 
-        /*
         getAddress((float) report.getLocation().getLan(), (float) report.getLocation().getLng());
 
         progressDialog.show();
@@ -391,20 +417,40 @@ public class UserReportActivity extends AppCompatActivity{
             }
         }
 
+
+        int typeReport = 0;
+        for (int i = 0; i < listTypeReport.size(); i++) {
+            if(mSpinnerType.getSelectedItem() == listTypeReport.get(i).getName()){
+                typeReport = listTypeReport.get(i).getId();
+                break;
+            }
+        }
+
+        String grade = "";
+
+        switch (mSpinnerGrade.getSelectedItem().toString()){
+            case "Basso": { grade = "LOW"; break;}
+            case "Medio": { grade = "INTERMEDIATE"; break;}
+            case "Alto": { grade = "HIGH"; break;}
+        }
+
         Service service = ServiceGenerator.createService();
-        Call<Report.ResponseReport> call = service.newReport(
-                city.getId(),description,city.getAddress(),report.getLocation().getLan(),report.getLocation().getLng(),parts);
+        Call<Report.ResponseNewReport> call = service.newReport(
+                city,
+                description,
+                address,
+                report.getLocation().getLan(),
+                report.getLocation().getLng(),
+                typeReport,
+                grade,
+                parts);
 
 
-        call.enqueue(new Callback<Report.ResponseReport>() {
+        call.enqueue(new Callback<Report.ResponseNewReport>() {
             @Override
-            public void onResponse(Call<Report.ResponseReport> call, Response<Report.ResponseReport> response) {
+            public void onResponse(Call<Report.ResponseNewReport> call, Response<Report.ResponseNewReport> response) {
                     if(response.isSuccessful()){
-                        Report result = response.body().getReports().get(0);
-                        report = result;
-//                        report.setUser(user);
-//                        report.getUser().setId(result.getId());
-//                        report.setCity(city);
+                        Report.ResponseNewReport.Cdt cdt = response.body().getCdt();
                         Snackbar.make(coordinatorLayout,"Il report è stato inviato", Snackbar.LENGTH_SHORT).show();
                         progressDialog.dismiss();
                         returnToMainActivity();
@@ -418,14 +464,13 @@ public class UserReportActivity extends AppCompatActivity{
             }
 
             @Override
-            public void onFailure(Call<Report.ResponseReport> call, Throwable t) {
+            public void onFailure(Call<Report.ResponseNewReport> call, Throwable t) {
                 Toast.makeText(getApplicationContext(),t.getLocalizedMessage(),Toast.LENGTH_LONG).show();
                 Log.i(MainActivity.TAG,t.getLocalizedMessage());
                 t.printStackTrace();
                 progressDialog.dismiss();
             }
         });
-*/
 
 
 
@@ -541,8 +586,8 @@ public class UserReportActivity extends AppCompatActivity{
         geocoder = new Geocoder(this, Locale.getDefault());
         try {
             addresses = geocoder.getFromLocation(lan, lng, 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
-            String address = addresses.get(0).getThoroughfare()+", "+addresses.get(0).getFeatureName(); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
-//            city.setAddress(address);
+            address = addresses.get(0).getThoroughfare()+", "+addresses.get(0).getFeatureName(); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
+            city = addresses.get(0).getLocality();
 
         } catch (IOException e) {
             e.printStackTrace();

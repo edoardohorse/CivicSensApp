@@ -20,14 +20,19 @@ public interface Service {
     @GET("apiReport/report/photos/{reportId}")
     Call<ResponsePhoto> getPhotosByReportId(@Path("reportId") int reportId);
 
+    @GET("apiReport/report/types")
+    Call<Report.ResponseTypeReport> getAllTypeOfReport();
+
     @Multipart
     @POST("apiReport/report/new")
-    Call<Report.ResponseReport> newReport(
-            @Part("idCity") int idCity,
-            @Part("description") String description,
-            @Part("address")    String address,
-            @Part("lan") double lan,
-            @Part("lng") double lng,
-            @Part List<MultipartBody.Part> photos
+    Call<Report.ResponseNewReport> newReport(
+            @Part("city")           String nameCity,
+            @Part("description")    String description,
+            @Part("address")        String address,
+            @Part("lan")            double lan,
+            @Part("lng")            double lng,
+            @Part("typeReport")     int typeReport,
+            @Part("grade")          String grade,
+            @Part                   List<MultipartBody.Part> photos
     );
 }

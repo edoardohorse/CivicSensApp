@@ -28,6 +28,7 @@ import android.view.View;
 import android.widget.SearchView;
 import android.widget.Toast;
 
+import com.civic.gercs.civicsense.Sender.Location;
 import com.civic.gercs.civicsense.Sender.Report;
 
 public class MainActivity extends AppCompatActivity implements EventListener{
@@ -39,6 +40,7 @@ public class MainActivity extends AppCompatActivity implements EventListener{
     private RecyclerView.LayoutManager mLayoutManager;
     private FloatingActionButton mFab;
     private String mTitle;
+    GPSTracker gps;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +48,8 @@ public class MainActivity extends AppCompatActivity implements EventListener{
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        gps = new GPSTracker(this);
 
         mTitle =  this.getTitle().toString();
         mRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
@@ -61,20 +65,7 @@ public class MainActivity extends AppCompatActivity implements EventListener{
             ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
         }
 
-
-        final GPSTracker gps = new GPSTracker(this);
-
-        mFab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                double latitude = gps.getLatitude();
-                double longitude = gps.getLongitude();
-                Toast.makeText(getApplicationContext(), "Lat: "+ String.valueOf(latitude)+
-                        "  Lng: "+ String.valueOf(longitude), Toast.LENGTH_LONG).show();
-            }
-        });/*
-
+        managerReport.fetchTypesOfReport();
 
         managerReport.setImportDoneListener(new ManagerReport.OnImportDoneEventListener() {
             @Override
@@ -98,7 +89,7 @@ public class MainActivity extends AppCompatActivity implements EventListener{
             public void onClick(View view) {
                 openUserActivity();
             }
-        });*/
+        });
     }
 
     private void populateReport(){}
@@ -178,9 +169,13 @@ public class MainActivity extends AppCompatActivity implements EventListener{
     }
 
     public void openUserActivity(){
+
+        double latitude = gps.getLatitude();
+        double longitude = gps.getLongitude();
         Report report = new Report();
+
 //        report.setCity(city);
-//        report.setLocation(currentLocation);
+        report.setLocation(new Location(latitude, longitude));
 
         Intent i = new Intent(this, UserReportActivity.class);
         i.putExtra("report", report);
@@ -234,9 +229,16 @@ public class MainActivity extends AppCompatActivity implements EventListener{
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == 900){
-            if(resultCode == RESULT_OK){
-                managerReport.showReport( (Report) data.getSerializableExtra("report"));
+        switch (requestCode){
+            case 900: {
+                if (resultCode == RESULT_OK) {
+                    managerReport.showReport((Report) data.getSerializableExtra("report"));
+                }
+                break;
+            }
+            case 950:{
+                managerReport.fetchReports();
+                break;
             }
         }
     }

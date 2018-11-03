@@ -58,6 +58,26 @@ public class Sender {
         });
     }
 
+    public void fetchTypesOfReport(final ManagerReport managerReport) {
+        service = ServiceGenerator.createService();
+        Call<Report.ResponseTypeReport> call =  service.getAllTypeOfReport();
+        call.enqueue(new Callback<Report.ResponseTypeReport>() {
+            @Override
+            public void onResponse(Call<Report.ResponseTypeReport> call, Response<Report.ResponseTypeReport> response) {
+                if(response.isSuccessful()){
+                    managerReport.importListTypeOfReport( response.body().getTypes() );
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Report.ResponseTypeReport> call, Throwable t) {
+//                Toast.makeText(getApplicationContext(),t.getLocalizedMessage(),Toast.LENGTH_LONG).show();
+                Log.d(TAG,t.getLocalizedMessage());
+                t.printStackTrace();
+            }
+        });
+    }
+
 
     public interface OnFetchReportDoneEventListener{
         void onFetchDone(Report report);

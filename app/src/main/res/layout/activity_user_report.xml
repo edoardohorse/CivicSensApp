@@ -21,7 +21,13 @@
 
             <include layout="@layout/card_photo"/>
 
+            <include layout="@layout/card_type_report"/>
+
+            <include layout="@layout/card_grade"/>
+
             <include layout="@layout/card_description"/>
+
+
 
             <Button
                 android:id="@+id/button_report"

@@ -19,13 +19,17 @@ public class ManagerReport {
     private Sender sender = new Sender();
     private EventListener listener;
 
+
+
+    private List<Report.TypeReport> listTypeOfReport = null;
+
     private OnImportDoneEventListener mImportDoneListener = null;
 
 
     // ==== Getter
     public List<Report> getReports() { return reports; }
     public ArrayList<Report.ReportModel> getReportModels() { return reportModels;}
-
+    public List<Report.TypeReport> getListTypeOfReport() { return listTypeOfReport;}
 
     // === Constructor
     public ManagerReport(Activity a){
@@ -41,6 +45,8 @@ public class ManagerReport {
 
 
     // === Method
+    public void fetchTypesOfReport(){ sender.fetchTypesOfReport(this);}
+
     public void fetchReports(){
         sender.fetchReports(this);
     }
@@ -57,6 +63,10 @@ public class ManagerReport {
             mImportDoneListener.onImportDone();
         }
         Log.i(TAG, this.reports.size()+" Report importati");
+    }
+
+    public void importListTypeOfReport(List<Report.TypeReport> l){
+        this.listTypeOfReport = l;
     }
 
     private void openReport(Report report){

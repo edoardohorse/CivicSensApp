@@ -5,6 +5,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Report implements Serializable {
@@ -14,6 +15,7 @@ public class Report implements Serializable {
     @SerializedName("grade")        @Expose private GradeReport grade = null;
     @SerializedName("city")         @Expose private String city;
     @SerializedName("address")      @Expose private String address;
+    @SerializedName("type")         @Expose private String type;
     @SerializedName("description")  @Expose private String description;
     @SerializedName("location")     @Expose private Location location;
     @SerializedName("photos")       @Expose private List<String> photos = null;
@@ -103,12 +105,13 @@ public class Report implements Serializable {
 
     public class ResponseReport {
 
-        @SerializedName("error")
-        @Expose
-        private Boolean error;
-        @SerializedName("data")
-        @Expose
-        private List<Report> reports = null;
+        @SerializedName("error")    @Expose private Boolean error;
+        @SerializedName("message")    @Expose private String message;
+        @SerializedName("data")     @Expose private List<Report> reports = null;
+
+        public String getMessage() {return message;}
+
+        public void setMessage(String message) {this.message = message;}
 
         public Boolean getError() {
             return error;
@@ -128,6 +131,50 @@ public class Report implements Serializable {
 
     }
 
+    public class ResponseNewReport{
+        @SerializedName("error")    @Expose private Boolean error;
+        @SerializedName("message")    @Expose private String message;
+        @SerializedName("data")     @Expose private Cdt cdt= null;
+
+        public String getMessage() {return message;}
+
+        public void setMessage(String message) {this.message = message;}
+
+        public Boolean getError() {
+            return error;
+        }
+
+        public void setError(Boolean error) {
+            this.error = error;
+        }
+
+        public Cdt getCdt() {
+            return cdt;
+        }
+
+        public void setCdt(Cdt cdt) {
+            this.cdt = cdt;
+        }
+
+        public class Cdt{
+            public String getCdt() {
+                return cdt;
+            }
+
+            public void setCdt(String cdt) {
+                this.cdt = cdt;
+            }
+
+            @SerializedName("cdt") @Expose String cdt;
+
+        }
+
+
+
+
+
+    }
+
     public class ReportModel{
         public String address;
         public String descrition;
@@ -138,5 +185,49 @@ public class Report implements Serializable {
             this.descrition = descrition;
             this.grade = grade;
         }
+    }
+
+    public class TypeReport{
+        @SerializedName("id")   @Expose private int id;
+        @SerializedName("name") @Expose private String name;
+
+        public int getId() {return id;}
+
+        public void setId(int id) {this.id = id;}
+
+        public String getName() {return name;}
+
+        public void setName(String name) {this.name = name;}
+
+    }
+
+    public class ResponseTypeReport{
+        @SerializedName("error") @Expose private Boolean error;
+        @SerializedName("message")    @Expose private String message;
+        @SerializedName("data")  @Expose private List<TypeReport> types = null;
+
+        public String getMessage() {return message;}
+
+        public void setMessage(String message) {this.message = message;}
+
+        public Boolean getError() {
+            return error;
+        }
+
+        public void setError(Boolean error) {
+            this.error = error;
+        }
+
+        public List<TypeReport> getTypes() {
+            return types;
+        }
+
+        public void setTypes(List<TypeReport> types) {
+            this.types = types;
+        }
+
+
+
+
     }
 }
