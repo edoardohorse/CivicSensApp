@@ -21,4 +21,25 @@
 
     <string name="dialog_search_title">Risulato</string>
     <string name="dialog_search_text">Nessun report con questo codice di tracking è stato trovato.</string>
+
+    <!-- button → bottom sheet -->
+    <string name="button_load_photo">Carica</string>
+    <string name="button_take_photo">Scatta</string>
+
+    <!-- button -->
+    <string name="button_report">Segnala</string>
+
+    <!-- General text  -->
+    <string name="text_explanation_sign_in">
+            Per ricordarci delle tue segnalazioni abbiamo bisogno di sapere
+            chi sei. Ci basta conoscere la tua Gmail.
+            </string>
+    <string name="text_congrats">Grazie per il tuo aiuto.</string>
+    <string name="hint_description">Dai una descrizione alla segnalazione&#8230;</string>
+
+    <!-- Dialog -->
+    <string name="dialog_title">Attenzione</string>
+    <string name="dialog_text_no_description">Inserisci una descrizione di cosa stai segnalando</string>
+    <string name="dialog_text_no_photo">Inserisci una o più foto per testimoniare la tua segnalazione</string>
+    <string name="text_button_neutral">Capito</string>
 </resources>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:textSize="@dimen/title_card"
+        android:id="@+id/label_photo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/label_photo">
+    </TextView>
+    <HorizontalScrollView
+        android:id="@+id/horizontal_scroll"
+        android:layout_below="@id/label_photo"
+        android:layout_width="match_parent"
+        android:scrollbars="none"
+        android:layout_height="300dp">
+
+        <LinearLayout
+            android:id="@+id/layout_photos"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="horizontal" >
+
+            <include layout="@layout/card_view_default_layout"/>
+
+        </LinearLayout>
+
+    </HorizontalScrollView>
+
+</RelativeLayout>

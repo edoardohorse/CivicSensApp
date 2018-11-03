@@ -6,12 +6,10 @@ import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 
-class Location implements Serializable {
+public class Location implements Serializable {
 
-    @SerializedName("lan")  @Expose
-    private double lan;
-    @SerializedName("lng")  @Expose
-    private double lng;
+    @SerializedName("lan")  @Expose    private double lan;
+    @SerializedName("lng")  @Expose    private double lng;
 
     public Location(double lan, double lng) {
         this.lan = lan;

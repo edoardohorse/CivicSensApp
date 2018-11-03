@@ -1,6 +1,8 @@
 <resources>
     <dimen name="fab_margin">16dp</dimen>
 
+    <dimen name="icon_plus">45dp</dimen>
+
     <!-- Tile report-->
     <dimen name="tile_report_height">64dp</dimen>
     <dimen name="tile_report_padding_left">16dp</dimen>

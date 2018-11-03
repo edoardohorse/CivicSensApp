@@ -9,27 +9,15 @@ import java.util.List;
 
 public class Report implements Serializable {
 
-    @SerializedName("id")           @Expose
-    private int id;
-    @SerializedName("verified")     @Expose
-    private Boolean verified;
-    @SerializedName("grade")        @Expose
-    private GradeReport grade = null;
-
-
-    @SerializedName("address")      @Expose
-    private String address;
-    @SerializedName("description")  @Expose
-    private String description;
-    @SerializedName("location")     @Expose
-    private Location location;
-    @SerializedName("photos")       @Expose
-    private List<String> photos = null;
-
-
-
-    @SerializedName("cdt")          @Expose
-    private String cdt = null;
+    @SerializedName("id")           @Expose private int id;
+    @SerializedName("verified")     @Expose private Boolean verified;
+    @SerializedName("grade")        @Expose private GradeReport grade = null;
+    @SerializedName("city")         @Expose private String city;
+    @SerializedName("address")      @Expose private String address;
+    @SerializedName("description")  @Expose private String description;
+    @SerializedName("location")     @Expose private Location location;
+    @SerializedName("photos")       @Expose private List<String> photos = null;
+    @SerializedName("cdt")          @Expose private String cdt = null;
 
     private ReportModel reportModel = null;
 
@@ -85,6 +73,10 @@ public class Report implements Serializable {
         this.location = location;
     }
 
+    public String getCity() {return city;}
+
+    public void setCity(String city) {this.city = city;}
+
     public List<String> getPhotos() {
         return photos;
     }
@@ -102,7 +94,8 @@ public class Report implements Serializable {
 
     public ReportModel getModel(){ return new ReportModel(this.address, this.description, this.grade);}
 
-    public Report(String address, String description, Location location) {
+    public Report(String city, String address, String description, Location location) {
+        this.city = city;
         this.address = address;
         this.description = description;
         this.location = location;

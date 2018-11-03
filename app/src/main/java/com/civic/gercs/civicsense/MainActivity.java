@@ -4,9 +4,11 @@ import android.annotation.TargetApi;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -17,6 +19,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SearchEvent;
+import android.view.View;
 import android.widget.SearchView;
 
 import com.civic.gercs.civicsense.Sender.Report;
@@ -63,7 +66,12 @@ public class MainActivity extends AppCompatActivity implements EventListener{
             }
         });
 
-
+        mFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openUserActivity();
+            }
+        });
     }
 
     private void populateReport(){}
@@ -140,6 +148,27 @@ public class MainActivity extends AppCompatActivity implements EventListener{
     public void openSearchActivity(){
         Intent i = new Intent(this, SearchActivity.class);
         startActivityForResult(i, 900);
+    }
+
+    public void openUserActivity(){
+        Report report = new Report();
+//        report.setCity(city);
+//        report.setLocation(currentLocation);
+
+        Intent i = new Intent(this, UserReportActivity.class);
+        i.putExtra("report", report);
+        startActivityForResult(i, 950);
+    }
+
+    public static boolean hasPermissions(Context context, String... permissions) {
+        if (context != null && permissions != null) {
+            for (String permission : permissions) {
+                if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     @Override
