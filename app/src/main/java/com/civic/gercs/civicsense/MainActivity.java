@@ -1,11 +1,16 @@
 package com.civic.gercs.civicsense;
 
+import android.Manifest;
 import android.annotation.TargetApi;
+import android.app.AlertDialog;
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
@@ -21,6 +26,7 @@ import android.view.MenuItem;
 import android.view.SearchEvent;
 import android.view.View;
 import android.widget.SearchView;
+import android.widget.Toast;
 
 import com.civic.gercs.civicsense.Sender.Report;
 
@@ -48,6 +54,27 @@ public class MainActivity extends AppCompatActivity implements EventListener{
         managerReport = new ManagerReport(this);
         managerReport.fetchReports();
 
+        int PERMISSION_ALL = 1;
+        String[] PERMISSIONS = {Manifest.permission.ACCESS_FINE_LOCATION};
+
+        if(!hasPermissions(this, PERMISSIONS)){
+            ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
+        }
+
+
+        final GPSTracker gps = new GPSTracker(this);
+
+        mFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                double latitude = gps.getLatitude();
+                double longitude = gps.getLongitude();
+                Toast.makeText(getApplicationContext(), "Lat: "+ String.valueOf(latitude)+
+                        "  Lng: "+ String.valueOf(longitude), Toast.LENGTH_LONG).show();
+            }
+        });/*
+
 
         managerReport.setImportDoneListener(new ManagerReport.OnImportDoneEventListener() {
             @Override
@@ -71,7 +98,7 @@ public class MainActivity extends AppCompatActivity implements EventListener{
             public void onClick(View view) {
                 openUserActivity();
             }
-        });
+        });*/
     }
 
     private void populateReport(){}
@@ -169,6 +196,39 @@ public class MainActivity extends AppCompatActivity implements EventListener{
             }
         }
         return true;
+    }
+
+    boolean isGPSEnabled(){
+        LocationManager service = (LocationManager) getSystemService(LOCATION_SERVICE);
+        boolean enabled = service
+                .isProviderEnabled(LocationManager.GPS_PROVIDER);
+        if (!enabled) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage("Il GPS è disabilitato.")
+                    .setPositiveButton("Abilita", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                            startActivity(intent);
+                        }
+                    })
+                    .setNegativeButton("Annulla", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            return;
+                        }
+                    });
+
+            builder.create().show();
+
+
+
+        }
+        else{
+//            Toast.makeText(this,"GPS abilitato",Toast.LENGTH_SHORT).show();
+        }
+
+        return enabled;
     }
 
     @Override
