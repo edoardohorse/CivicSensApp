@@ -294,7 +294,7 @@ public class UserReportActivity extends AppCompatActivity{
 
             if (photoFile != null) {
                 Uri photoURI = FileProvider.getUriForFile(this,
-                        "com.example.edoardo.testtheme.fileprovider",
+                        "com.civic.gercs.civicsense.fileprovider",
                         photoFile);
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
                 startActivityForResult(takePictureIntent, RC_PHOTO);
