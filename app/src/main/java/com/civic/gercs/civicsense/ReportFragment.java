@@ -1,6 +1,6 @@
 package com.civic.gercs.civicsense;
 
-import android.arch.lifecycle.ViewModelProviders;
+
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+
 import com.civic.gercs.civicsense.Sender.Report;
 
 public class ReportFragment extends Fragment {
@@ -19,7 +20,8 @@ public class ReportFragment extends Fragment {
     private TextView textview;
     private Report mReport;
     private LinearLayout linearLayout;
-    private static int mSize = 0;
+    private static int mSizeHeight = 0;
+    private static int mSizeWidth = 0;
     private EventListener listener = null;
 
     public static ReportFragment newInstance() {
@@ -66,20 +68,21 @@ public class ReportFragment extends Fragment {
     }
 
     private void populatePhotos(){
-        if(mSize == 0) {
+        if(mSizeHeight == 0) {
             View parent = (View) linearLayout.getParent();
-            mSize = parent.getHeight();
+            mSizeHeight = parent.getLayoutParams().height;
         }
 
 
         for(String photo: mReport.getPhotos()) {
             ImageView imageView = new ImageView(getContext());
-            linearLayout.addView(imageView);
+            ViewGroup.LayoutParams layoutParams  = new ViewGroup.LayoutParams(1000, mSizeHeight);
+
+            linearLayout.addView(imageView, layoutParams);
 
 
             GlideApp.with(this)
                     .load(photo)
-                    .override(mSize)
                     .skipMemoryCache(false)
                     .into(imageView);
         }
