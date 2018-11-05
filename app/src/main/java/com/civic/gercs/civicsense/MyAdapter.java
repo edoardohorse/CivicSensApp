@@ -73,7 +73,14 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
             case LOW:{ grade = holder.itemView.getResources().getDrawable(R.drawable.circle_grade_low); break;}
         }
 
-        holder.mGrade.setBackground(grade);
+        holder.mGrade.setBackgroundDrawable(grade);
+
+        final int sdk = android.os.Build.VERSION.SDK_INT;
+        if(sdk < android.os.Build.VERSION_CODES.JELLY_BEAN) {
+            holder.mGrade.setBackgroundDrawable(grade);
+        } else {
+            holder.mGrade.setBackground(grade);
+        }
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
