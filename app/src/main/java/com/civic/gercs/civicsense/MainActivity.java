@@ -25,11 +25,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SearchEvent;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.SearchView;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import com.civic.gercs.civicsense.Sender.Location;
 import com.civic.gercs.civicsense.Sender.Report;
+import com.civic.gercs.civicsense.Sender.ServiceGenerator;
 
 public class MainActivity extends AppCompatActivity implements EventListener{
 
@@ -38,6 +41,7 @@ public class MainActivity extends AppCompatActivity implements EventListener{
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
+    private Switch mSwitch;
     private FloatingActionButton mFab;
     private String mTitle;
     GPSTracker gps;
@@ -50,6 +54,7 @@ public class MainActivity extends AppCompatActivity implements EventListener{
         setSupportActionBar(toolbar);
 
         gps = new GPSTracker(this);
+
 
         mTitle =  this.getTitle().toString();
         mRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
@@ -90,6 +95,9 @@ public class MainActivity extends AppCompatActivity implements EventListener{
                 openUserActivity();
             }
         });
+
+
+
     }
 
     private void populateReport(){}
@@ -102,6 +110,16 @@ public class MainActivity extends AppCompatActivity implements EventListener{
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
+        MenuItem item = menu.findItem(R.id.action_endpoint);
+        item.setActionView(R.layout.switch_layout);
+
+        mSwitch = (Switch) item.getActionView().findViewById(R.id.switchForActionBar);
+        mSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                ServiceGenerator.switchApiBaseUrl();
+            }
+        });
 
         return true;
     }

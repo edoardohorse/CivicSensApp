@@ -12,4 +12,9 @@
         android:title="@string/search_title"
         android:icon="@drawable/ic_search"
         app:showAsAction="collapseActionView|ifRoom" />
+
+    <item android:id="@+id/action_endpoint"
+        android:title="Endpoint"
+        android:actionLayout="@layout/switch_layout"
+        app:showAsAction="collapseActionView"/>
 </menu>

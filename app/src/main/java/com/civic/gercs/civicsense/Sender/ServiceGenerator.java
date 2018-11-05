@@ -8,10 +8,11 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
 
+import static com.civic.gercs.civicsense.EndPoint.END_POINT_ALTERVISTA;
 import static com.civic.gercs.civicsense.EndPoint.END_POINT_LOCAL;
 
 public class ServiceGenerator {
-    public static String apiBaseUrl = END_POINT_LOCAL;
+    public static String apiBaseUrl = END_POINT_ALTERVISTA;
     private static Retrofit retrofit;
 
     private static Retrofit.Builder builder =
@@ -42,8 +43,13 @@ public class ServiceGenerator {
 
     }
 
-    public static void changeApiBaseUrl(String newApiBaseUrl) {
-        apiBaseUrl = newApiBaseUrl;
+    public static void switchApiBaseUrl() {
+        if(apiBaseUrl.equals(END_POINT_LOCAL)){
+            apiBaseUrl = END_POINT_ALTERVISTA;
+        }
+        else{
+            apiBaseUrl = END_POINT_LOCAL;
+        }
 
         createBuild();
 
