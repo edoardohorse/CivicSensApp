@@ -14,17 +14,17 @@ import retrofit2.http.Path;
 public interface Service {
 
     // Fetch all report of a city
-    @GET("apiReport/ente/reports")
+    @GET("api/ente/reports")
     Call<Report.ResponseReport> getAllReports();
 
-    @GET("apiReport/report/photos/{reportId}")
+    @GET("api/report/photos/{reportId}")
     Call<ResponsePhoto> getPhotosByReportId(@Path("reportId") int reportId);
 
-    @GET("apiReport/report/types")
+    @GET("api/report/types")
     Call<Report.ResponseTypeReport> getAllTypeOfReport();
 
     @Multipart
-    @POST("apiReport/report/new")
+    @POST("api/report/new")
     Call<Report.ResponseNewReport> newReport(
             @Part("city")           String nameCity,
             @Part("description")    String description,
