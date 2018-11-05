@@ -44,6 +44,7 @@
     <string name="dialog_text_no_description">Inserisci una descrizione di cosa stai segnalando</string>
     <string name="dialog_text_no_photo">Inserisci una o più foto per testimoniare la tua segnalazione</string>
     <string name="text_button_neutral">Capito</string>
+    <string name="text_button_copy">Copia</string>
 
     <!--Switch -->
     <string name="switch_localhost">L</string>

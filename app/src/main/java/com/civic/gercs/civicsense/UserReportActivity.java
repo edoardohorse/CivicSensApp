@@ -8,6 +8,7 @@ import android.app.AlertDialog;
 import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -450,10 +451,10 @@ public class UserReportActivity extends AppCompatActivity{
             @Override
             public void onResponse(Call<Report.ResponseNewReport> call, Response<Report.ResponseNewReport> response) {
                     if(response.isSuccessful()){
-                        Report.ResponseNewReport.Cdt cdt = response.body().getCdt();
-                        Snackbar.make(coordinatorLayout,"Il report è stato inviato", Snackbar.LENGTH_SHORT).show();
+                        final Report.ResponseNewReport.Cdt cdt = response.body().getCdt();
                         progressDialog.dismiss();
-                        returnToMainActivity();
+                        Snackbar.make(coordinatorLayout,"Il report è stato inviato", Snackbar.LENGTH_SHORT).show();
+                        showCdt(cdt);
                     }
 //                webView.loadData(response.body(), "text/html", null);
 //                return;
@@ -597,5 +598,30 @@ public class UserReportActivity extends AppCompatActivity{
     private void returnToMainActivity(){
         setResult(RESULT_OK);
         finish();
+    }
+
+    private void showCdt(final  Report.ResponseNewReport.Cdt cdt){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setTitle(R.string.dialog_title)
+                .setMessage("Ecco il codice di tracking: "+cdt.getCdt())
+                .setNegativeButton(R.string.text_button_neutral, new DialogInterface.OnClickListener() {
+                    @Override public void onClick(DialogInterface dialog, int which) { dialog.dismiss();returnToMainActivity();}})
+                .setNeutralButton(R.string.text_button_copy, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                        ClipData clip = ClipData.newPlainText("cdt", cdt.getCdt());
+                        try{
+                            clipboard.setPrimaryClip(clip);
+                        }
+                        catch (NullPointerException e){
+                            e.printStackTrace();
+                        }
+                        Toast.makeText(getApplicationContext(), "Copiato", Toast.LENGTH_SHORT).show();
+                        returnToMainActivity();
+                    }
+                })
+                .show();
     }
 }
