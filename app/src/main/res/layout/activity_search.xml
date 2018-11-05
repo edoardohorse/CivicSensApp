@@ -12,7 +12,6 @@
         android:id="@+id/editext_search"
         android:layout_width="match_parent"
         android:layout_height="@dimen/edit_text_search"
-        android:text="quijgj6bIz1"
         android:autofillHints="@string/search_hint"/>
 
     <Button
