@@ -28,11 +28,13 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
+import android.text.Editable;
+import android.text.InputType;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -43,7 +45,6 @@ import android.widget.Toast;
 
 import com.bumptech.glide.GenericTransitionOptions;
 import com.bumptech.glide.request.transition.ViewPropertyTransition;
-import com.civic.gercs.civicsense.Sender.GradeReport;
 import com.civic.gercs.civicsense.Sender.Report;
 import com.civic.gercs.civicsense.Sender.Service;
 import com.civic.gercs.civicsense.Sender.ServiceGenerator;
@@ -65,6 +66,7 @@ import retrofit2.Response;
 
 import static com.civic.gercs.civicsense.MainActivity.hasPermissions;
 import static com.civic.gercs.civicsense.MainActivity.managerReport;
+import static com.civic.gercs.civicsense.SearchActivity.hideKeyboard;
 
 //import static com.example.layout_segnalazione.UserUtils.RC_SIGN_IN;
 
@@ -83,6 +85,7 @@ public class UserReportActivity extends AppCompatActivity{
     private String              mCurrentPhotoPath;
     private Spinner             mSpinnerGrade;
     private Spinner             mSpinnerType;
+    private boolean             withEmail = false;
     ViewPropertyTransition.Animator animationObject;
 //    WebView webView;
     BottomSheetFragment         bottomSheetFragment;
@@ -92,8 +95,13 @@ public class UserReportActivity extends AppCompatActivity{
 
 //    private User                user = new User();
     private Report              report = new Report();
-    private String                city ;
-    private String                address ;
+    private String              city;
+    private String              address;
+    private String              grade;
+    private String              description;
+    private List<MultipartBody.Part> parts;
+    private int                 typeReport;
+    private String              email = "";
 
     private List<Report.TypeReport> listTypeReport;
 
@@ -176,7 +184,7 @@ public class UserReportActivity extends AppCompatActivity{
         mButtonSendReport.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sendReport();
+                prepareReportToSend();
             }
         });
 
@@ -357,7 +365,7 @@ public class UserReportActivity extends AppCompatActivity{
     }
 
     private void openPhoto(Uri uri){
-
+        hideKeyboard(this);
         for(Photo photo: photos){
             if(uri == photo.uri){
                 photoSelected = photo;
@@ -383,11 +391,13 @@ public class UserReportActivity extends AppCompatActivity{
         imageFullFragment.onDestroy();
     }
 
-    public void sendReport(){
+    public void prepareReportToSend(){
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
-        String description = mEditTextDescription.getText().toString();
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+
+        description = mEditTextDescription.getText().toString();
         if(photos.size() == 0){
             builder.setTitle(R.string.dialog_title)
                     .setMessage(R.string.dialog_text_no_photo)
@@ -408,18 +418,10 @@ public class UserReportActivity extends AppCompatActivity{
 
         getAddress((float) report.getLocation().getLan(), (float) report.getLocation().getLng());
 
-        progressDialog.show();
+
 //        webView.loadUrl("about:blank");
-        List<MultipartBody.Part> parts = new ArrayList<>();
-        for(int i=0; i < photos.size(); i++){
-            MultipartBody.Part filePart = prepareFilePart("photos[]",photos.get(i));
-            if(filePart != null) {
-                parts.add(filePart);
-            }
-        }
 
-
-        int typeReport = 0;
+        typeReport = 0;
         for (int i = 0; i < listTypeReport.size(); i++) {
             if(mSpinnerType.getSelectedItem() == listTypeReport.get(i).getName()){
                 typeReport = listTypeReport.get(i).getId();
@@ -427,7 +429,15 @@ public class UserReportActivity extends AppCompatActivity{
             }
         }
 
-        String grade = "";
+        parts = new ArrayList<>();
+        for(int i=0; i < photos.size(); i++){
+            MultipartBody.Part filePart = prepareFilePart("photos[]",photos.get(i));
+            if(filePart != null) {
+                parts.add(filePart);
+            }
+        }
+
+        grade = "";
 
         switch (mSpinnerGrade.getSelectedItem().toString()){
             case "Basso": { grade = "LOW"; break;}
@@ -435,48 +445,75 @@ public class UserReportActivity extends AppCompatActivity{
             case "Alto": { grade = "HIGH"; break;}
         }
 
-        Service service = ServiceGenerator.createService();
-        Call<Report.ResponseNewReport> call = service.newReport(
-                city,
-                description,
-                address,
-                report.getLocation().getLan(),
-                report.getLocation().getLng(),
-                typeReport,
-                grade,
-                parts);
+        final EditText input = new EditText(this);
+        LinearLayout.LayoutParams ls = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT);
+        ls.setMargins(16,0,16,0);
 
 
-        call.enqueue(new Callback<Report.ResponseNewReport>() {
-            @Override
-            public void onResponse(Call<Report.ResponseNewReport> call, Response<Report.ResponseNewReport> response) {
-                    if(response.isSuccessful()){
-                        final Report.ResponseNewReport.Cdt cdt = response.body().getCdt();
-                        progressDialog.dismiss();
-                        Snackbar.make(coordinatorLayout,"Il report è stato inviato", Snackbar.LENGTH_SHORT).show();
-                        showCdt(cdt);
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
+        input.setHint("Inserisci l'email");
+        input.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+        input.setLayoutParams(ls);
+
+        builder.setTitle(R.string.dialog_title)
+                .setMessage(R.string.dialog_text_cdt_request)
+                .setView(input)
+                .setNeutralButton("Annulla", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
                     }
-//                webView.loadData(response.body(), "text/html", null);
-//                return;
+                })
+                .setNegativeButton("No, grazie", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        withEmail = false;
+                        email = "";
+                        sendRequest();
+                    }
+                })
+                .setPositiveButton("Si", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        withEmail = true;
+                        email = input.getText().toString();
+                        sendRequest();
+                    }
+                });
 
-//                webView.loadData(response.body(), "text/html", null);
-//                return;
+        final AlertDialog dialog  = builder.create();
+        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialogInterface) {
+                dialog.getButton((AlertDialog.BUTTON_POSITIVE)).setEnabled(false);
+            }
+        });
+        dialog.show();
+
+        input.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
             }
 
             @Override
-            public void onFailure(Call<Report.ResponseNewReport> call, Throwable t) {
-                Toast.makeText(getApplicationContext(),t.getLocalizedMessage(),Toast.LENGTH_LONG).show();
-                Log.i(MainActivity.TAG,t.getLocalizedMessage());
-                t.printStackTrace();
-                progressDialog.dismiss();
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                String str = input.getText().toString();
+                if(isEmail(str)){
+                    dialog.getButton((AlertDialog.BUTTON_POSITIVE)).setEnabled(true);
+                }
+                else{
+                    dialog.getButton((AlertDialog.BUTTON_POSITIVE)).setEnabled(false);
+                }
+
             }
         });
 
-
-
-
-//        this.finish();
     }
 
     public void removePhoto(int index){
@@ -623,5 +660,48 @@ public class UserReportActivity extends AppCompatActivity{
                     }
                 })
                 .show();
+    }
+
+    public static boolean isEmail(String email){
+        return android.util.Patterns.EMAIL_ADDRESS.matcher(email.trim()).matches();
+    }
+
+    private void sendRequest(){
+        hideKeyboard(this);
+        progressDialog.show();
+        Service service = ServiceGenerator.createService();
+        Call<Report.ResponseNewReport> call = service.newReport(
+                city,
+                description,
+                address,
+                report.getLocation().getLan(),
+                report.getLocation().getLng(),
+                typeReport,
+                grade,
+                email,
+                parts);
+
+
+        call.enqueue(new Callback<Report.ResponseNewReport>() {
+            @Override
+            public void onResponse(Call<Report.ResponseNewReport> call, Response<Report.ResponseNewReport> response) {
+                if(response.isSuccessful()){
+                    final Report.ResponseNewReport.Cdt cdt = response.body().getCdt();
+                    progressDialog.dismiss();
+                    Snackbar.make(coordinatorLayout,"Il report è stato inviato", Snackbar.LENGTH_SHORT).show();
+                    showCdt(cdt);
+                }
+//                webView.loadData(response.body(), "text/html", null);
+//                return;
+            }
+
+            @Override
+            public void onFailure(Call<Report.ResponseNewReport> call, Throwable t) {
+                Toast.makeText(getApplicationContext(),t.getLocalizedMessage(),Toast.LENGTH_LONG).show();
+                Log.i(MainActivity.TAG,t.getLocalizedMessage());
+                t.printStackTrace();
+                progressDialog.dismiss();
+            }
+        });
     }
 }

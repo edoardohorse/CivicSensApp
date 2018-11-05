@@ -17,7 +17,8 @@ import com.civic.gercs.civicsense.Sender.Report;
 
 public class ReportFragment extends Fragment {
 
-    private TextView textview;
+    private TextView mTextViewDesctription;
+    private TextView mTextViewTypeReport;
     private Report mReport;
     private LinearLayout linearLayout;
     private static int mSizeHeight = 0;
@@ -44,7 +45,8 @@ public class ReportFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_report, container, false);
         linearLayout = (LinearLayout) view.findViewById(R.id.layout_photos);
-        textview = (TextView) view.findViewById(R.id.textview_description);
+        mTextViewDesctription = (TextView) view.findViewById(R.id.textview_description);
+        mTextViewTypeReport = (TextView) view.findViewById(R.id.textview_type_report);
 
         populateFragment();
         return view;
@@ -63,8 +65,8 @@ public class ReportFragment extends Fragment {
 
     private void populateFragment(){
         populatePhotos();
-        textview.setText( mReport.getDescription() );
-        textview.setEnabled(false);
+        mTextViewDesctription.setText( mReport.getDescription() );
+        mTextViewTypeReport.setText( mReport.getType() );
     }
 
     private void populatePhotos(){

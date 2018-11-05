@@ -63,6 +63,10 @@ public class Report implements Serializable {
         this.verified = verified;
     }
 
+    public String getType() {return type;}
+
+    public void setType(String type) {this.type = type;    }
+
     public void setGrade(GradeReport grade) {
         this.grade = grade;
     }

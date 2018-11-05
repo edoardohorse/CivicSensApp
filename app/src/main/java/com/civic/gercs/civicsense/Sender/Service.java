@@ -33,6 +33,7 @@ public interface Service {
             @Part("lng")            double lng,
             @Part("typeReport")     int typeReport,
             @Part("grade")          String grade,
+            @Part("email")          String email,
             @Part                   List<MultipartBody.Part> photos
     );
 }
