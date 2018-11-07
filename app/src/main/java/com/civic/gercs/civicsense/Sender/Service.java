@@ -20,6 +20,9 @@ public interface Service {
     @GET("api/report/photos/{reportId}")
     Call<ResponsePhoto> getPhotosByReportId(@Path("reportId") int reportId);
 
+    @GET("api/report/history/{reportId}")
+    Call<Report.ResponseHistory> getHistoryByReportId(@Path("reportId") int reportId);
+
     @GET("api/report/types")
     Call<Report.ResponseTypeReport> getAllTypeOfReport();
 

@@ -19,6 +19,7 @@ public class Report implements Serializable {
     @SerializedName("description")  @Expose private String description;
     @SerializedName("location")     @Expose private Location location;
     @SerializedName("photos")       @Expose private List<String> photos = null;
+    @SerializedName("history")       @Expose private List<History> history = null;
     @SerializedName("cdt")          @Expose private String cdt = null;
 
     private ReportModel reportModel = null;
@@ -90,6 +91,10 @@ public class Report implements Serializable {
     public void setPhotos(List<String> photos) {
         this.photos = photos;
     }
+
+    public List<History> getHistory() {return history;}
+
+    public void setHistory(List<History> history) {this.history = history;}
 
     public String getCdt() {return cdt;}
 
@@ -205,7 +210,7 @@ public class Report implements Serializable {
 
     }
 
-    public class ResponseTypeReport{
+    public class ResponseTypeReport {
         @SerializedName("error") @Expose private Boolean error;
         @SerializedName("message")    @Expose private String message;
         @SerializedName("data")  @Expose private List<TypeReport> types = null;
@@ -233,5 +238,36 @@ public class Report implements Serializable {
 
 
 
+    }
+
+    public class History{
+         @SerializedName("date") @Expose private String date;
+         @SerializedName("note") @Expose private String note;
+
+        public String getDate() {return date;}
+
+        public void setDate(String date) {this.date = date;}
+
+        public String getNote() {return note;}
+
+        public void setNote(String note) {this.note = note;}
+    }
+
+    public class ResponseHistory{
+        @SerializedName("error") @Expose private Boolean error;
+        @SerializedName("message")    @Expose private String message;
+        @SerializedName("data")  @Expose private List<History> history = null;
+
+        public Boolean getError() {return error;}
+
+        public void setError(Boolean error) {this.error = error;}
+
+        public String getMessage() {return message;}
+
+        public void setMessage(String message) {this.message = message;}
+
+        public List<History> getHistory() {return history;}
+
+        public void setHistory(List<History> history) {this.history = history;}
     }
 }

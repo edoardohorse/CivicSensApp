@@ -20,6 +20,7 @@
     <string name="label_description">Descrizione</string>
     <string name="label_type_report">Tipo segnalazione</string>
     <string name="label_grade">Gravità</string>
+    <string name="label_history">Storico</string>
 
     <string name="dialog_search_title">Risulato</string>
     <string name="dialog_search_text">Nessun report con questo codice di tracking è stato trovato.</string>

@@ -34,7 +34,7 @@ public class Sender {
         });
     }
 
-    public void fetchInfoReport(final Report report){
+    public void fetchPhotosReport(final Report report){
         service = ServiceGenerator.createService();
         Call<ResponsePhoto> call =  service.getPhotosByReportId(report.getId());
         call.enqueue(new Callback<ResponsePhoto>() {
@@ -51,6 +51,29 @@ public class Sender {
 
             @Override
             public void onFailure(Call<ResponsePhoto> call, Throwable t) {
+//                Toast.makeText(getApplicationContext(),t.getLocalizedMessage(),Toast.LENGTH_LONG).show();
+                Log.d(TAG,t.getLocalizedMessage());
+                t.printStackTrace();
+            }
+        });
+    }
+    public void fetchHistorysReport(final Report report){
+        service = ServiceGenerator.createService();
+        Call<Report.ResponseHistory> call =  service.getHistoryByReportId(report.getId());
+        call.enqueue(new Callback<Report.ResponseHistory>() {
+            @Override
+            public void onResponse(Call<Report.ResponseHistory> call, Response<Report.ResponseHistory> response) {
+                if(response.isSuccessful()){
+                    report.setHistory( response.body().getHistory() );
+
+                    if(mFetchReportDoneListener != null){
+                        mFetchReportDoneListener.onFetchDone(report);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Report.ResponseHistory> call, Throwable t) {
 //                Toast.makeText(getApplicationContext(),t.getLocalizedMessage(),Toast.LENGTH_LONG).show();
                 Log.d(TAG,t.getLocalizedMessage());
                 t.printStackTrace();

@@ -82,19 +82,14 @@ public class ManagerReport {
         Report report = reports.get(position);
         Report.ReportModel model = reportModels.get(position);
 
-        // If not fetched before
-        if(report.getPhotos().isEmpty()) {
-            sender.fetchInfoReport(report);
-        }
-        else{
-            openReport(report);
-        }
+        this.showReport(report);
     }
 
     public void showReport(Report report){
         // If not fetched before
         if(report.getPhotos().isEmpty()) {
-            sender.fetchInfoReport(report);
+            sender.fetchPhotosReport(report);
+            sender.fetchHistorysReport(report);
         }
         else{
             openReport(report);

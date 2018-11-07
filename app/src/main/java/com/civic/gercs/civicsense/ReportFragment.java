@@ -13,12 +13,15 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 
+import com.civic.gercs.civicsense.Sender.GradeReport;
 import com.civic.gercs.civicsense.Sender.Report;
 
 public class ReportFragment extends Fragment {
 
     private TextView mTextViewDesctription;
     private TextView mTextViewTypeReport;
+    private TextView mTextViewGrade;
+    private LinearLayout mLinearHistoryReport;
     private Report mReport;
     private LinearLayout linearLayout;
     private static int mSizeHeight = 0;
@@ -47,7 +50,8 @@ public class ReportFragment extends Fragment {
         linearLayout = (LinearLayout) view.findViewById(R.id.layout_photos);
         mTextViewDesctription = (TextView) view.findViewById(R.id.textview_description);
         mTextViewTypeReport = (TextView) view.findViewById(R.id.textview_type_report);
-
+        mTextViewGrade = (TextView) view.findViewById(R.id.textview_grade);
+        mLinearHistoryReport = (LinearLayout) view.findViewById(R.id.linear_history_report);
         populateFragment();
         return view;
     }
@@ -67,6 +71,26 @@ public class ReportFragment extends Fragment {
         populatePhotos();
         mTextViewDesctription.setText( mReport.getDescription() );
         mTextViewTypeReport.setText( mReport.getType() );
+        switch(mReport.getGrade()){
+            case LOW:{mTextViewGrade.setText( "Bassa" ); break;}
+            case INTERMEDIATE:{mTextViewGrade.setText( "Media" ); break;}
+            case HIGH:{mTextViewGrade.setText( "Alta" ); break;}
+        }
+
+
+        for (Report.History h: mReport.getHistory()){
+            View child = getLayoutInflater().inflate(R.layout.layout_history_report, null);
+            ((TextView)child.findViewById(R.id.textview_history_date)).setText(h.getDate());
+            ((TextView)child.findViewById(R.id.textview_history_note)).setText(h.getNote());
+
+            mLinearHistoryReport.addView(child);
+        }
+
+
+
+
+//        mLinearHistoryReport.addView();
+
     }
 
     private void populatePhotos(){
