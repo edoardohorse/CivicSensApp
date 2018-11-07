@@ -44,6 +44,7 @@ public class Sender {
                     report.setPhotos( response.body().getPhotos() );
 
                     if(mFetchReportDoneListener != null){
+                        mFetchReportDoneListener.onFetchPhotosDone(report);
                         mFetchReportDoneListener.onFetchDone(report);
                     }
                 }
@@ -67,6 +68,7 @@ public class Sender {
                     report.setHistory( response.body().getHistory() );
 
                     if(mFetchReportDoneListener != null){
+                        mFetchReportDoneListener.onFetchHistoryDone(report);
                         mFetchReportDoneListener.onFetchDone(report);
                     }
                 }
@@ -104,6 +106,8 @@ public class Sender {
 
     public interface OnFetchReportDoneEventListener{
         void onFetchDone(Report report);
+        void onFetchPhotosDone(Report report);
+        void onFetchHistoryDone(Report report);
     }
 
     public void setFetchReportDoneEventListener( OnFetchReportDoneEventListener listener ){ mFetchReportDoneListener = listener;}

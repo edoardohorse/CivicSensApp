@@ -22,7 +22,8 @@ public class ManagerReport {
 
 
     private List<Report.TypeReport> listTypeOfReport = null;
-
+    boolean arePhotosLoaded = false;
+    boolean isHistoryLoaded = false;
     private OnImportDoneEventListener mImportDoneListener = null;
 
 
@@ -38,7 +39,22 @@ public class ManagerReport {
         sender.setFetchReportDoneEventListener(new Sender.OnFetchReportDoneEventListener() {
             @Override
             public void onFetchDone(Report report) {
-                openReport(report);
+                if(arePhotosLoaded && isHistoryLoaded) {
+                    openReport(report);
+
+                    arePhotosLoaded = false;
+                    isHistoryLoaded = false;
+                }
+            }
+
+            @Override
+            public void onFetchPhotosDone(Report report) {
+                arePhotosLoaded = true;
+            }
+
+            @Override
+            public void onFetchHistoryDone(Report report) {
+                isHistoryLoaded = true;
             }
         });
     }
@@ -70,6 +86,8 @@ public class ManagerReport {
     }
 
     private void openReport(Report report){
+
+
 
         listener.openReport(report);
 
