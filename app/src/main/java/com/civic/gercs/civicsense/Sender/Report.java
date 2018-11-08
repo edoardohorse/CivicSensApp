@@ -18,6 +18,7 @@ public class Report implements Serializable {
     @SerializedName("type")         @Expose private String type;
     @SerializedName("description")  @Expose private String description;
     @SerializedName("location")     @Expose private Location location;
+    @SerializedName("state" )        @Expose private String state;
     @SerializedName("photos")       @Expose private List<String> photos = null;
     @SerializedName("history")       @Expose private List<History> history = null;
     @SerializedName("cdt")          @Expose private String cdt = null;
@@ -75,6 +76,10 @@ public class Report implements Serializable {
     public Location getLocation() {
         return location;
     }
+
+    public String getState() {return state;}
+
+    public void setState(String state) {this.state = state;}
 
     public void setLocation(Location location) {
         this.location = location;

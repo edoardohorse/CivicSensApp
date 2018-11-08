@@ -21,6 +21,7 @@ public class ReportFragment extends Fragment {
     private TextView mTextViewDesctription;
     private TextView mTextViewTypeReport;
     private TextView mTextViewGrade;
+    private TextView mTextViewState ;
     private LinearLayout mLinearHistoryReport;
     private Report mReport;
     private LinearLayout linearLayout;
@@ -48,6 +49,7 @@ public class ReportFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_report, container, false);
         linearLayout = (LinearLayout) view.findViewById(R.id.layout_photos);
+        mTextViewState = (TextView) view.findViewById(R.id.textview_state);
         mTextViewDesctription = (TextView) view.findViewById(R.id.textview_description);
         mTextViewTypeReport = (TextView) view.findViewById(R.id.textview_type_report);
         mTextViewGrade = (TextView) view.findViewById(R.id.textview_grade);
@@ -69,6 +71,7 @@ public class ReportFragment extends Fragment {
 
     private void populateFragment(){
         populatePhotos();
+        mTextViewState.setText( mReport.getState() );
         mTextViewDesctription.setText( mReport.getDescription() );
         mTextViewTypeReport.setText( mReport.getType() );
         switch(mReport.getGrade()){

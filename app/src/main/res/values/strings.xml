@@ -18,6 +18,7 @@
     <string name="label_account">Account</string>
     <string name="label_photo">Foto</string>
     <string name="label_description">Descrizione</string>
+    <string name="label_state">Stato</string>
     <string name="label_type_report">Tipo segnalazione</string>
     <string name="label_grade">Gravità</string>
     <string name="label_history">Storico</string>
