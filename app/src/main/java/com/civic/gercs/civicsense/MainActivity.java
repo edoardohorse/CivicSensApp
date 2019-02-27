@@ -3,7 +3,6 @@ package com.civic.gercs.civicsense;
 import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
-import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -26,13 +25,10 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.SearchEvent;
 import android.view.View;
 import android.widget.CompoundButton;
-import android.widget.SearchView;
 import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.civic.gercs.civicsense.Sender.Location;
 import com.civic.gercs.civicsense.Sender.Report;
@@ -54,6 +50,7 @@ public class MainActivity extends AppCompatActivity implements EventListener{
     private FloatingActionButton mFab;
     private String mTitle;
     private String city;
+    private String nameApp;
     GPSTracker gps;
 
     @Override
@@ -62,9 +59,11 @@ public class MainActivity extends AppCompatActivity implements EventListener{
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        nameApp = getResources().getString(R.string.app_name);
 
         gps = new GPSTracker(this);
-        getCity();
+        getCityFromCoordinates();
+
 //        city = "Taranto";
         mTitle =  this.getTitle().toString();
         mRecyclerView       = (RecyclerView) findViewById(R.id.my_recycler_view);
@@ -145,12 +144,12 @@ public class MainActivity extends AppCompatActivity implements EventListener{
 
         return super.onOptionsItemSelected(item);
     }
-
+/*
     @Override
     protected void onResume(){
         super.onResume();
-        getCity();
-    }
+        getCityFromCoordinates();
+    }*/
 
     @Override
     @TargetApi(16)
@@ -206,7 +205,9 @@ public class MainActivity extends AppCompatActivity implements EventListener{
         startActivityForResult(i, 950);
     }
 
-    public void getCity(){
+    public void getCityFromCoordinates(){
+
+
         double latitude = gps.getLatitude();
         double longitude = gps.getLongitude();
         Geocoder geocoder;
@@ -215,6 +216,10 @@ public class MainActivity extends AppCompatActivity implements EventListener{
         try {
             addresses = geocoder.getFromLocation(latitude, longitude, 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
             city = addresses.get(0).getLocality();
+
+            getSupportActionBar().setTitle(nameApp+" \u00B7 "+city);
+
+
             Log.i(TAG,"Città in cui sei:  "+city);
 
         } catch (IOException e) {
