@@ -14,8 +14,9 @@ import retrofit2.http.Path;
 public interface Service {
 
     // Fetch all report of a city
-    @GET("api/ente/reports")
-    Call<Report.ResponseReport> getAllReports();
+    @GET("api/ente/{cityName}/reports")// TODO to implement cityname
+    Call<Report.ResponseReport> getAllReports(@Path("cityName") String cityName);
+    
 
     @GET("api/report/photos/{reportId}")
     Call<ResponsePhoto> getPhotosByReportId(@Path("reportId") int reportId);
