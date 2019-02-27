@@ -15,15 +15,14 @@ public class Sender {
     public Service service;
     private OnFetchReportDoneEventListener mFetchReportDoneListener = null;
 
-    public void fetchReports(final ManagerReport managerReport){
+    public void fetchReports(final ManagerReport managerReport, String cityName){
         service = ServiceGenerator.createService();
-        Call<Report.ResponseReport> call = service.getAllReports();
+        Call<Report.ResponseReport> call = service.getAllReports(cityName);
         call.enqueue(new Callback<Report.ResponseReport>() {
             @Override
             public void onResponse(Call<Report.ResponseReport> call, Response<Report.ResponseReport> response) {
                 if(response.isSuccessful()){
-                    managerReport.importReport( response.body().getReports() );
-
+                    managerReport.importReport( response.body().getReports(), response.body() );
                 }
             }
 

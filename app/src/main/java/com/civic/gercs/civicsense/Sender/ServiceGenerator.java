@@ -12,7 +12,7 @@ import static com.civic.gercs.civicsense.EndPoint.END_POINT_ALTERVISTA;
 import static com.civic.gercs.civicsense.EndPoint.END_POINT_LOCAL;
 
 public class ServiceGenerator {
-    public static String apiBaseUrl = END_POINT_ALTERVISTA;
+    public static String apiBaseUrl = END_POINT_LOCAL;
     private static Retrofit retrofit;
 
     private static Retrofit.Builder builder =

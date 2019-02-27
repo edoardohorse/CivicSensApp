@@ -8,6 +8,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -21,6 +23,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SearchEvent;
@@ -28,22 +31,29 @@ import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.SearchView;
 import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.civic.gercs.civicsense.Sender.Location;
 import com.civic.gercs.civicsense.Sender.Report;
 import com.civic.gercs.civicsense.Sender.ServiceGenerator;
 
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
+
 public class MainActivity extends AppCompatActivity implements EventListener{
 
     public static ManagerReport managerReport;
     public static final String TAG ="Civic";
     private RecyclerView mRecyclerView;
+    private TextView mTextReportImport;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private Switch mSwitch;
     private FloatingActionButton mFab;
     private String mTitle;
+    private String city;
     GPSTracker gps;
 
     @Override
@@ -54,14 +64,15 @@ public class MainActivity extends AppCompatActivity implements EventListener{
         setSupportActionBar(toolbar);
 
         gps = new GPSTracker(this);
-
-
+        getCity();
+//        city = "Taranto";
         mTitle =  this.getTitle().toString();
-        mRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
-        mFab = (FloatingActionButton) findViewById(R.id.add_report);
+        mRecyclerView       = (RecyclerView) findViewById(R.id.my_recycler_view);
+        mFab                = (FloatingActionButton) findViewById(R.id.add_report);
+        mTextReportImport   = (TextView) findViewById(R.id.text_report_import);
 
         managerReport = new ManagerReport(this);
-        managerReport.fetchReports();
+        managerReport.fetchReports(city);
 
         int PERMISSION_ALL = 1;
         String[] PERMISSIONS = {Manifest.permission.ACCESS_FINE_LOCATION};
@@ -74,18 +85,13 @@ public class MainActivity extends AppCompatActivity implements EventListener{
 
         managerReport.setImportDoneListener(new ManagerReport.OnImportDoneEventListener() {
             @Override
-            public void onImportDone() {
-                mRecyclerView.setHasFixedSize(true);
-
-
-                mLayoutManager = new LinearLayoutManager(getApplicationContext());
-                mRecyclerView.setLayoutManager(mLayoutManager);
-
-
-                mAdapter = new MyAdapter(managerReport);
-                mRecyclerView.setAdapter(mAdapter);
-
-//                openReport(managerReport.getReports().get(0));
+            public void onImportDone(boolean error, String message) {
+                if(error){
+                    drawEmptyListReport(message);
+                }
+                else{
+                    drawListReport();
+                }
             }
         });
 
@@ -128,7 +134,7 @@ public class MainActivity extends AppCompatActivity implements EventListener{
         //noinspection SimplifiableIfStatement
        switch(id){
            case R.id.action_refresh:{
-               managerReport.fetchReports();
+               managerReport.fetchReports(city);
                break;
            }
            case R.id.action_search:{
@@ -138,6 +144,12 @@ public class MainActivity extends AppCompatActivity implements EventListener{
        }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+        getCity();
     }
 
     @Override
@@ -194,6 +206,22 @@ public class MainActivity extends AppCompatActivity implements EventListener{
         startActivityForResult(i, 950);
     }
 
+    public void getCity(){
+        double latitude = gps.getLatitude();
+        double longitude = gps.getLongitude();
+        Geocoder geocoder;
+        List<Address> addresses;
+        geocoder = new Geocoder(this, Locale.getDefault());
+        try {
+            addresses = geocoder.getFromLocation(latitude, longitude, 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
+            city = addresses.get(0).getLocality();
+            Log.i(TAG,"Città in cui sei:  "+city);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static boolean hasPermissions(Context context, String... permissions) {
         if (context != null && permissions != null) {
             for (String permission : permissions) {
@@ -238,6 +266,24 @@ public class MainActivity extends AppCompatActivity implements EventListener{
         return enabled;
     }
 
+    private void drawListReport(){
+        mRecyclerView.setHasFixedSize(true);
+
+
+        mLayoutManager = new LinearLayoutManager(getApplicationContext());
+        mRecyclerView.setLayoutManager(mLayoutManager);
+
+
+        mAdapter = new MyAdapter(managerReport);
+        mRecyclerView.setAdapter(mAdapter);
+
+//                openReport(managerReport.getReports().get(0));
+    }
+
+    private void drawEmptyListReport(String message){
+        mTextReportImport.setText(message);
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -249,7 +295,7 @@ public class MainActivity extends AppCompatActivity implements EventListener{
                 break;
             }
             case 950:{
-                managerReport.fetchReports();
+                managerReport.fetchReports(city);
                 break;
             }
         }
