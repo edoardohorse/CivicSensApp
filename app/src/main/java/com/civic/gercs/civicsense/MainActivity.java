@@ -22,11 +22,14 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CompoundButton;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -110,15 +113,19 @@ public class MainActivity extends AppCompatActivity implements EventListener{
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         MenuItem item = menu.findItem(R.id.action_endpoint);
-        item.setActionView(R.layout.switch_layout);
+//        item.setActionView(R.layout.switch_layout);
 
-        mSwitch = (Switch) item.getActionView().findViewById(R.id.switchForActionBar);
-        mSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        item.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                ServiceGenerator.switchApiBaseUrl();
+            public boolean onMenuItemClick(MenuItem menuItem) {
+
+                setEndpoint();
+
+                return false;
             }
         });
+
+
 
         return true;
     }
@@ -133,6 +140,7 @@ public class MainActivity extends AppCompatActivity implements EventListener{
         //noinspection SimplifiableIfStatement
        switch(id){
            case R.id.action_refresh:{
+               clearReports();
                managerReport.fetchReports(city);
                break;
            }
@@ -272,6 +280,8 @@ public class MainActivity extends AppCompatActivity implements EventListener{
     }
 
     private void drawListReport(){
+        //clearReports();
+
         mRecyclerView.setHasFixedSize(true);
 
 
@@ -285,8 +295,45 @@ public class MainActivity extends AppCompatActivity implements EventListener{
 //                openReport(managerReport.getReports().get(0));
     }
 
+    public void clearReports(){
+        managerReport.clearReports();
+        mAdapter.notifyDataSetChanged();
+    }
+
     private void drawEmptyListReport(String message){
         mTextReportImport.setText(message);
+    }
+
+    private void setEndpoint(){
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        final EditText input = new EditText(this);
+        LinearLayout.LayoutParams ls = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT);
+        ls.setMargins(16,0,16,0);
+
+
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
+        input.setHint("Inserisci l'indirizzo di rete");
+        input.setText("192.168.");
+        input.setLayoutParams(ls);
+
+        builder.setTitle(R.string.dialog_title)
+                .setView(input)
+                .setNeutralButton("Annulla", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                    }
+                })
+                .setPositiveButton("Finito", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        ServiceGenerator.switchApiBaseUrl(input.getText().toString());
+                        managerReport.fetchReports(city);
+                    }
+                })
+                .show();
+
     }
 
     @Override

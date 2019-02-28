@@ -89,6 +89,12 @@ public class ManagerReport {
         }
     }
 
+    public void clearReports(){
+        this.reports.clear();
+        this.reportModels.clear();
+        this.listTypeOfReport.clear();
+    }
+
     public void importListTypeOfReport(List<Report.TypeReport> l){
         this.listTypeOfReport = l;
     }
