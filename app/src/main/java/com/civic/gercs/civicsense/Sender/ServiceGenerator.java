@@ -43,12 +43,17 @@ public class ServiceGenerator {
 
     }
 
-    public static void switchApiBaseUrl() {
-        if(apiBaseUrl.equals(END_POINT_LOCAL)){
-            apiBaseUrl = END_POINT_ALTERVISTA;
+    public static void switchApiBaseUrl(String address) {
+        if(address != ""){
+            apiBaseUrl = "http://"+address+"/CivicSensWeb/";
         }
         else{
-            apiBaseUrl = END_POINT_LOCAL;
+            if(apiBaseUrl.equals(END_POINT_LOCAL)){
+                apiBaseUrl = END_POINT_ALTERVISTA;
+            }
+            else{
+                apiBaseUrl = END_POINT_LOCAL;
+            }
         }
 
         createBuild();
