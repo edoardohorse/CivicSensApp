@@ -63,8 +63,8 @@ public class ManagerReport {
     // === Method
     public void fetchTypesOfReport(String cityName){ sender.fetchTypesOfReport(this, cityName);}
 
-    public void fetchReports(String cityName){
-        sender.fetchReports(this, cityName);
+    public boolean fetchReports(String cityName){
+        return sender.fetchReports(this, cityName);
     }
 
     public void importReport(List<Report> rep, Report.ResponseReport responseReport){

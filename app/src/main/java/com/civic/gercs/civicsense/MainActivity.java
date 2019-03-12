@@ -74,7 +74,9 @@ public class MainActivity extends AppCompatActivity implements EventListener{
         mTextReportImport   = (TextView) findViewById(R.id.text_report_import);
 
         managerReport = new ManagerReport(this);
-        managerReport.fetchReports(city);
+        if(managerReport.fetchReports(city)){
+            drawEmptyListReport(getString(R.string.error_no_connection_to_the_server));
+        }
 
         int PERMISSION_ALL = 1;
         String[] PERMISSIONS = {Manifest.permission.ACCESS_FINE_LOCATION};
@@ -140,8 +142,7 @@ public class MainActivity extends AppCompatActivity implements EventListener{
         //noinspection SimplifiableIfStatement
        switch(id){
            case R.id.action_refresh:{
-               clearReports();
-               managerReport.fetchReports(city);
+               fetchReports();
                break;
            }
            case R.id.action_search:{
@@ -281,6 +282,7 @@ public class MainActivity extends AppCompatActivity implements EventListener{
     }
 
     private void drawListReport(){
+        clearListReportError();
         //clearReports();
 
         mRecyclerView.setHasFixedSize(true);
@@ -294,6 +296,10 @@ public class MainActivity extends AppCompatActivity implements EventListener{
         mRecyclerView.setAdapter(mAdapter);
 
 //                openReport(managerReport.getReports().get(0));
+    }
+
+    private void clearListReportError() {
+        mTextReportImport.setText("");
     }
 
     public void clearReports(){
@@ -330,11 +336,23 @@ public class MainActivity extends AppCompatActivity implements EventListener{
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         ServiceGenerator.switchApiBaseUrl(input.getText().toString());
-                        managerReport.fetchReports(city);
+                        fetchReports();
+                    }
+                })
+                .setNegativeButton("Altervista", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        ServiceGenerator.switchApiBaseUrl("altervista");
+                        fetchReports();
                     }
                 })
                 .show();
 
+    }
+
+    public void fetchReports(){
+        clearReports();
+        managerReport.fetchReports(city);
     }
 
     @Override
@@ -348,7 +366,7 @@ public class MainActivity extends AppCompatActivity implements EventListener{
                 break;
             }
             case 950:{
-                managerReport.fetchReports(city);
+                fetchReports();
                 break;
             }
         }

@@ -44,17 +44,19 @@ public class ServiceGenerator {
     }
 
     public static void switchApiBaseUrl(String address) {
-        if(address != ""){
-            apiBaseUrl = "http://"+address+"/CivicSensWeb/";
+        if(address.equals("altervista")){
+            apiBaseUrl = END_POINT_ALTERVISTA;
+            createBuild();
+            return;
+        }
+
+        if(address.equals("192.168.")){
+            apiBaseUrl = END_POINT_LOCAL;
         }
         else{
-            if(apiBaseUrl.equals(END_POINT_LOCAL)){
-                apiBaseUrl = END_POINT_ALTERVISTA;
-            }
-            else{
-                apiBaseUrl = END_POINT_LOCAL;
-            }
+            apiBaseUrl = "http://"+address+"/CivicSensWeb/";
         }
+
 
         createBuild();
 

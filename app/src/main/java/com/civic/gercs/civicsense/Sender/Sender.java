@@ -15,8 +15,14 @@ public class Sender {
     public Service service;
     private OnFetchReportDoneEventListener mFetchReportDoneListener = null;
 
-    public void fetchReports(final ManagerReport managerReport, String cityName){
+    public boolean fetchReports(final ManagerReport managerReport, String cityName){
         service = ServiceGenerator.createService();
+
+        //Check if the connection to the server is valid
+        if(service == null){
+            return false;
+        }
+
         Call<Report.ResponseReport> call = service.getAllReports(cityName);
         call.enqueue(new Callback<Report.ResponseReport>() {
             @Override
@@ -31,6 +37,8 @@ public class Sender {
                 Log.e(TAG,t.getMessage());
             }
         });
+
+        return true;
     }
 
     public void fetchPhotosReport(final Report report){
@@ -56,7 +64,10 @@ public class Sender {
                 t.printStackTrace();
             }
         });
+
+
     }
+
     public void fetchHistorysReport(final Report report){
         service = ServiceGenerator.createService();
         Call<Report.ResponseHistory> call =  service.getHistoryByReportId(report.getId());
@@ -80,6 +91,8 @@ public class Sender {
                 t.printStackTrace();
             }
         });
+
+
     }
 
     public void fetchTypesOfReport(final ManagerReport managerReport, String cityName) {
@@ -101,6 +114,8 @@ public class Sender {
                 t.printStackTrace();
             }
         });
+
+
     }
 
 
