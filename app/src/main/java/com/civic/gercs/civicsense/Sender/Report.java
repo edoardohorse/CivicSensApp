@@ -17,13 +17,30 @@ public class Report implements Serializable {
     @SerializedName("address")      @Expose private String address;
     @SerializedName("type")         @Expose private String type;
     @SerializedName("description")  @Expose private String description;
-    @SerializedName("location")     @Expose private Location location;
+    @SerializedName("lan")          @Expose    private double lan;
+    @SerializedName("lng")          @Expose    private double lng;
     @SerializedName("state" )        @Expose private String state;
     @SerializedName("photos")       @Expose private List<String> photos = null;
     @SerializedName("history")       @Expose private List<History> history = null;
     @SerializedName("cdt")          @Expose private String cdt = null;
 
     private ReportModel reportModel = null;
+
+    public double getLan() {
+        return lan;
+    }
+
+    public void setLan(double lan) {
+        this.lan = lan;
+    }
+
+    public double getLng() {
+        return lng;
+    }
+
+    public void setLng(double lng) {
+        this.lng = lng;
+    }
 
     public Boolean isVerified() {
         return verified;
@@ -73,17 +90,13 @@ public class Report implements Serializable {
         this.grade = grade;
     }
 
-    public Location getLocation() {
-        return location;
-    }
+
 
     public String getState() {return state;}
 
     public void setState(String state) {this.state = state;}
 
-    public void setLocation(Location location) {
-        this.location = location;
-    }
+
 
     public String getCity() {return city;}
 
@@ -110,11 +123,12 @@ public class Report implements Serializable {
 
     public ReportModel getModel(){ return new ReportModel(this.address, this.description, this.grade);}
 
-    public Report(String city, String address, String description, Location location) {
+    public Report(String city, String address, String description, Double lan, Double lng) {
         this.city = city;
         this.address = address;
         this.description = description;
-        this.location = location;
+        this.lan = lan;
+        this.lng = lng;
     }
 
     public class ResponseReport {

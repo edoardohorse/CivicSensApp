@@ -61,7 +61,7 @@ public class ManagerReport {
 
 
     // === Method
-    public void fetchTypesOfReport(){ sender.fetchTypesOfReport(this);}
+    public void fetchTypesOfReport(String cityName){ sender.fetchTypesOfReport(this, cityName);}
 
     public void fetchReports(String cityName){
         sender.fetchReports(this, cityName);

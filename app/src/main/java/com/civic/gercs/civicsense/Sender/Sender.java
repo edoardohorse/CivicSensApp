@@ -82,14 +82,15 @@ public class Sender {
         });
     }
 
-    public void fetchTypesOfReport(final ManagerReport managerReport) {
+    public void fetchTypesOfReport(final ManagerReport managerReport, String cityName) {
         service = ServiceGenerator.createService();
-        Call<Report.ResponseTypeReport> call =  service.getAllTypeOfReport();
+        Call<Report.ResponseTypeReport> call =  service.getAllTypeOfReport(cityName);
         call.enqueue(new Callback<Report.ResponseTypeReport>() {
             @Override
             public void onResponse(Call<Report.ResponseTypeReport> call, Response<Report.ResponseTypeReport> response) {
                 if(response.isSuccessful()){
                     managerReport.importListTypeOfReport( response.body().getTypes() );
+                    Log.d(TAG,response.body().getMessage());
                 }
             }
 

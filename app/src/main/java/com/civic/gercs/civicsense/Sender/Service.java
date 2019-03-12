@@ -14,7 +14,7 @@ import retrofit2.http.Path;
 public interface Service {
 
     // Fetch all report of a city
-    @GET("api/ente/{cityName}/reports")// TODO to implement cityname
+    @GET("api/ente/{cityName}/reports")
     Call<Report.ResponseReport> getAllReports(@Path("cityName") String cityName);
     
 
@@ -24,8 +24,8 @@ public interface Service {
     @GET("api/report/history/{reportId}")
     Call<Report.ResponseHistory> getHistoryByReportId(@Path("reportId") int reportId);
 
-    @GET("api/report/types")
-    Call<Report.ResponseTypeReport> getAllTypeOfReport();
+    @GET("api/report/types/{cityName}")
+    Call<Report.ResponseTypeReport> getAllTypeOfReport(@Path("cityName") String cityName);
 
     @Multipart
     @POST("api/report/new")
@@ -33,11 +33,13 @@ public interface Service {
             @Part("city")           String nameCity,
             @Part("description")    String description,
             @Part("address")        String address,
+            @Part("grade")          String grade,
+            @Part("typeReport")     int typeReport,
+            //idteam
             @Part("lan")            double lan,
             @Part("lng")            double lng,
-            @Part("typeReport")     int typeReport,
-            @Part("grade")          String grade,
-            @Part("email")          String email,
-            @Part                   List<MultipartBody.Part> photos
+            //code
+            @Part                   List<MultipartBody.Part> photos,
+            @Part("email")          String email
     );
 }

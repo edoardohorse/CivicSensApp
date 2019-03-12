@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity implements EventListener{
         gps = new GPSTracker(this);
         getCityFromCoordinates();
 
-//        city = "Taranto";
+//        city = "Francavilla Fontana";
         mTitle =  this.getTitle().toString();
         mRecyclerView       = (RecyclerView) findViewById(R.id.my_recycler_view);
         mFab                = (FloatingActionButton) findViewById(R.id.add_report);
@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity implements EventListener{
             ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
         }
 
-        managerReport.fetchTypesOfReport();
+        managerReport.fetchTypesOfReport(city);
 
         managerReport.setImportDoneListener(new ManagerReport.OnImportDoneEventListener() {
             @Override
@@ -206,7 +206,8 @@ public class MainActivity extends AppCompatActivity implements EventListener{
         Report report = new Report();
 
 //        report.setCity(city);
-        report.setLocation(new Location(latitude, longitude));
+        report.setLan(latitude);
+        report.setLng(longitude);
 
         Intent i = new Intent(this, UserReportActivity.class);
         i.putExtra("report", report);
