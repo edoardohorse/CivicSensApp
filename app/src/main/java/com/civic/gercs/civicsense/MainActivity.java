@@ -64,20 +64,6 @@ public class MainActivity extends AppCompatActivity implements EventListener{
         setSupportActionBar(toolbar);
         nameApp = getResources().getString(R.string.app_name);
 
-        gps = new GPSTracker(this);
-        getCityFromCoordinates();
-
-//        city = "Francavilla Fontana";
-        mTitle =  this.getTitle().toString();
-        mRecyclerView       = (RecyclerView) findViewById(R.id.my_recycler_view);
-        mFab                = (FloatingActionButton) findViewById(R.id.add_report);
-        mTextReportImport   = (TextView) findViewById(R.id.text_report_import);
-
-        managerReport = new ManagerReport(this);
-        if(managerReport.fetchReports(city)){
-            drawEmptyListReport(getString(R.string.error_no_connection_to_the_server));
-        }
-
         int PERMISSION_ALL = 1;
         String[] PERMISSIONS = {Manifest.permission.ACCESS_FINE_LOCATION};
 
@@ -85,15 +71,54 @@ public class MainActivity extends AppCompatActivity implements EventListener{
             ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
         }
 
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if(city != null)
+            managerReport.fetchTypesOfReport(city);
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case 1: {
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                            this.init();
+                }
+                break;
+
+            }
+        }
+    }
+
+    private void init(){
+        gps = new GPSTracker(this);
+        getCityFromCoordinates();
+
+//        city = "Francavilla Fontana";
+        mTitle = this.getTitle().toString();
+        mRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
+        mFab = (FloatingActionButton) findViewById(R.id.add_report);
+        mTextReportImport = (TextView) findViewById(R.id.text_report_import);
+
+        managerReport = new ManagerReport(this);
+        if (managerReport.fetchReports(city)) {
+            drawEmptyListReport(getString(R.string.error_no_connection_to_the_server));
+        }
+
+
         managerReport.fetchTypesOfReport(city);
 
         managerReport.setImportDoneListener(new ManagerReport.OnImportDoneEventListener() {
             @Override
             public void onImportDone(boolean error, String message) {
-                if(error){
+                if (error) {
                     drawEmptyListReport(message);
-                }
-                else{
+                } else {
                     drawListReport();
                 }
             }
@@ -105,15 +130,6 @@ public class MainActivity extends AppCompatActivity implements EventListener{
                 openUserActivity();
             }
         });
-
-
-
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        managerReport.fetchTypesOfReport(city);
     }
 
     @Override
