@@ -16,4 +16,7 @@
 
     <dimen name="title_card">12sp</dimen>
 
+
+    <dimen name="text_report_import_error">20sp</dimen>
+
 </resources>

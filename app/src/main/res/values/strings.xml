@@ -53,4 +53,8 @@
     <string name="switch_localhost">L</string>
     <string name="switch_altervista">A</string>
 
+
+    <!--ERROR-->
+    <string name="error_no_connection_to_the_server">Non è stato possibile stabilire la connesione con il server</string>
+
 </resources>

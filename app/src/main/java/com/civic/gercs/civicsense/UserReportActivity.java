@@ -416,7 +416,7 @@ public class UserReportActivity extends AppCompatActivity{
             return;
         }
 
-        getAddress((float) report.getLocation().getLan(), (float) report.getLocation().getLng());
+        getAddress((float) report.getLan(), (float) report.getLng());
 
 
 //        webView.loadUrl("about:blank");
@@ -674,15 +674,15 @@ public class UserReportActivity extends AppCompatActivity{
                 city,
                 description,
                 address,
-                report.getLocation().getLan(),
-                report.getLocation().getLng(),
-                typeReport,
                 grade,
-                email,
-                parts);
+                typeReport,
+                report.getLan(),
+                report.getLng(),
+                parts,
+                email);
 
 
-        call.enqueue(new Callback<Report.ResponseNewReport>() {
+                call.enqueue(new Callback<Report.ResponseNewReport>() {
             @Override
             public void onResponse(Call<Report.ResponseNewReport> call, Response<Report.ResponseNewReport> response) {
                 if(response.isSuccessful()){

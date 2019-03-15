@@ -61,24 +61,38 @@ public class ManagerReport {
 
 
     // === Method
-    public void fetchTypesOfReport(){ sender.fetchTypesOfReport(this);}
+    public void fetchTypesOfReport(String cityName){ sender.fetchTypesOfReport(this, cityName);}
 
-    public void fetchReports(){
-        sender.fetchReports(this);
+    public boolean fetchReports(String cityName){
+        return sender.fetchReports(this, cityName);
     }
 
-    public void importReport(List<Report> rep){
-        this.reports = rep;
+    public void importReport(List<Report> rep, Report.ResponseReport responseReport){
+        if(rep != null){
+            this.reports = rep;
+            reportModels = new ArrayList<>(this.reports.size());
+            for (Report r: this.reports) {
+                this.reportModels.add( r.getModel() );
+            }
 
-        reportModels = new ArrayList<>(this.reports.size());
-        for (Report r: this.reports) {
-            this.reportModels.add( r.getModel() );
+            Log.i(TAG, "Report importati: "+this.reports.size());
         }
+        else{
+            Log.i(TAG, "Report importati: 0");
+        }
+
+
+
 
         if(mImportDoneListener != null){
-            mImportDoneListener.onImportDone();
+            mImportDoneListener.onImportDone(responseReport.getError(), responseReport.getMessage());
         }
-        Log.i(TAG, this.reports.size()+" Report importati");
+    }
+
+    public void clearReports(){
+        this.reports.clear();
+        this.reportModels.clear();
+        this.listTypeOfReport.clear();
     }
 
     public void importListTypeOfReport(List<Report.TypeReport> l){
@@ -127,7 +141,7 @@ public class ManagerReport {
 
     // === Interface and its setter
     public interface OnImportDoneEventListener{
-        void onImportDone();
+        void onImportDone(boolean error, String message);
     }
     public interface SearchEventListener{
         boolean seachReportByCdt(String c, Report f);

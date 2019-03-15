@@ -12,7 +12,7 @@ import static com.civic.gercs.civicsense.EndPoint.END_POINT_ALTERVISTA;
 import static com.civic.gercs.civicsense.EndPoint.END_POINT_LOCAL;
 
 public class ServiceGenerator {
-    public static String apiBaseUrl = END_POINT_ALTERVISTA;
+    public static String apiBaseUrl = END_POINT_LOCAL;
     private static Retrofit retrofit;
 
     private static Retrofit.Builder builder =
@@ -43,13 +43,20 @@ public class ServiceGenerator {
 
     }
 
-    public static void switchApiBaseUrl() {
-        if(apiBaseUrl.equals(END_POINT_LOCAL)){
+    public static void switchApiBaseUrl(String address) {
+        if(address.equals("altervista")){
             apiBaseUrl = END_POINT_ALTERVISTA;
+            createBuild();
+            return;
         }
-        else{
+
+        if(address.equals("192.168.")){
             apiBaseUrl = END_POINT_LOCAL;
         }
+        else{
+            apiBaseUrl = "http://"+address+"/CivicSensWeb/";
+        }
+
 
         createBuild();
 
