@@ -70,6 +70,9 @@ public class MainActivity extends AppCompatActivity implements EventListener{
         if(!hasPermissions(this, PERMISSIONS)){
             ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
         }
+        else{
+            this.init();
+        }
 
     }
 
