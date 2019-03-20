@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">CivicSense</string>
+    <string name="app_name">CivicSens</string>
     <string name="action_settings">Aggiorna</string>
 
     <string name="btn_search">Cerca</string>
