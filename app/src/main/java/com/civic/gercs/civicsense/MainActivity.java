@@ -231,6 +231,11 @@ public class MainActivity extends AppCompatActivity implements EventListener{
         double longitude = gps.getLongitude();
         Report report = new Report();
 
+        if(city.equals("Taranto")){
+            latitude = 40.527085;
+            longitude = 17.283427;
+        }
+
 //        report.setCity(city);
         report.setLan(latitude);
         report.setLng(longitude);
@@ -260,7 +265,7 @@ public class MainActivity extends AppCompatActivity implements EventListener{
             }
             city = addresses.get(0).getLocality();
             if(city == null){
-                city = "Paolo VI";
+                city = "Taranto";
             }
             getSupportActionBar().setTitle(nameApp+" \u00B7 "+city);
 
@@ -338,8 +343,10 @@ public class MainActivity extends AppCompatActivity implements EventListener{
     }
 
     public void clearReports(){
-        managerReport.clearReports();
-        mAdapter.notifyDataSetChanged();
+        if(managerReport.getReports() != null){
+            managerReport.clearReports();
+            mAdapter.notifyDataSetChanged();
+        }
     }
 
     private void drawEmptyListReport(String message){

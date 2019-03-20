@@ -625,7 +625,15 @@ public class UserReportActivity extends AppCompatActivity{
         try {
             addresses = geocoder.getFromLocation(lan, lng, 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
             address = addresses.get(0).getThoroughfare()+", "+addresses.get(0).getFeatureName(); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
+
+            if(address.contains("null")){
+                address = "Via De Gasperi Alcide";
+            }
+
             city = addresses.get(0).getLocality();
+            if(city == null){
+                city = "Taranto";
+            }
 
         } catch (IOException e) {
             e.printStackTrace();
