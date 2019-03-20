@@ -254,10 +254,14 @@ public class MainActivity extends AppCompatActivity implements EventListener{
 
             addresses = geocoder.getFromLocation(latitude, longitude, 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
             if(addresses.size() == 0){
-                addresses = geocoder.getFromLocation(40.527106, 17.284110, 1);
+                latitude = 40.5270967;
+                longitude = 17.2838072;
+                addresses = geocoder.getFromLocation(latitude, longitude, 1);
             }
             city = addresses.get(0).getLocality();
-
+            if(city == null){
+                city = "Paolo VI";
+            }
             getSupportActionBar().setTitle(nameApp+" \u00B7 "+city);
 
 
